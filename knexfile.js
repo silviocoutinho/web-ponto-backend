@@ -1,4 +1,4 @@
-// Update with your config settings.
+const { PASSBD } = require('./.env');
 
 module.exports = {
   test: {
@@ -6,7 +6,7 @@ module.exports = {
     connection: {
       database: 'pontos',
       user: 'root',
-      password: '',
+      password: PASSBD,
     },
     pool: {
       min: 2,
@@ -22,7 +22,7 @@ module.exports = {
     connection: {
       database: 'pontos',
       user: 'root',
-      password: '',
+      password: PASSBD,
     },
     pool: {
       min: 2,
