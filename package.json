@@ -9,7 +9,7 @@
   "scripts": {
     "test": "jest",
     "lint": "eslint src/** test/** --fix",
-    "start": "node src/server.js",
+    "start": "nodemon src/server.js",
     "secure-mode": "jest --watch --verbose=true"
   },
   "keywords": [
