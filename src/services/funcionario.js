@@ -9,11 +9,20 @@ const {
   strengthPassword,
 } = require('data-validation-cmjau');
 
-const RecursoNaoEncontrado = require('../../errors/RecursoNaoEncontrado');
-const RecursoIndevidoError = require('../../errors/RecursoIndevidoError');
+const RecursoNaoEncontrado = require('../errors/RecursoNaoEncontrado');
+const RecursoIndevidoError = require('../errors/RecursoIndevidoError');
 
 module.exports = app => {
-  const findAll = () => {};
+  const findAll = () => {
+    return [
+      {
+        id: 1,
+        nome: 'Jose',
+        PIS: 123456789,
+      },
+    ];
+  };
+
   const findOne = () => {};
   const save = () => {};
   const setActive = () => {};
