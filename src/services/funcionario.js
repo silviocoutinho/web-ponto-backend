@@ -13,14 +13,17 @@ const RecursoNaoEncontrado = require('../errors/RecursoNaoEncontrado');
 const RecursoIndevidoError = require('../errors/RecursoIndevidoError');
 
 module.exports = app => {
+  /**
+   * Retorna todos os registros no recurso Funcionarios
+   * @function
+   * @name findAll
+   * @return {Array} Um Array com todos os Registros
+   * @author Silvio Coutinho <silviocoutinho@ymail.com>
+   * @since v1
+   * @date 24/02/2021
+   */
   const findAll = () => {
-    return [
-      {
-        id: 1,
-        nome: 'Jose',
-        PIS: 123456789,
-      },
-    ];
+    return app.db('funcionarios').select(['fun_id', 'fun_nome']);
   };
 
   const findOne = () => {};
