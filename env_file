@@ -1,5 +1,7 @@
 module.exports = {
     authSecret: '',
     ENV: '', // test or prod
+    USERDB: '', 
+    DB: '',
     PASSDB: '', 
 } 
