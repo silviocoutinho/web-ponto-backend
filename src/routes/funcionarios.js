@@ -4,7 +4,8 @@ module.exports = app => {
   const router = express.Router();
 
   router.get('/', (req, res, next) => {
-    return res.status(200).send('Funcionarios -> get');
+    const result = app.services.funcionario.findAll();
+    return res.status(200).json(result);
   });
 
   return router;
