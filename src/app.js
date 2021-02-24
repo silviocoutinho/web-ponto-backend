@@ -2,6 +2,9 @@ const app = require('express')();
 const bodyParser = require('body-parser');
 const consign = require('consign');
 const { ENV } = require('../.env');
+const db = require('./config/db');
+
+app.db = db;
 
 consign({ cwd: 'src', verbose: false })
   .include('config/middleware.js')
