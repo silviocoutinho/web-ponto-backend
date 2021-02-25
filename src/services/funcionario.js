@@ -26,7 +26,9 @@ module.exports = app => {
     return app.db('funcionarios').select(['fun_id', 'fun_nome']);
   };
 
-  const findOne = () => {};
+  const findOne = (filter = {}) => {
+    return app.db('funcionarios').where(filter).first();
+  };
   const save = () => {};
   const setActive = () => {};
   const setInactive = () => {};
