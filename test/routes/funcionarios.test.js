@@ -45,7 +45,13 @@ describe('When listing employees ', () => {
         expect(res.body.fun_usuario).toBe('admin');
       });
   });
-  test.skip('Should return active employees', () => {});
+  test('Should return active employees', () => {
+    return request(app)
+      .get(`${MAIN_ROUTE}/ativos`)
+      .then(res => {
+        expect(res.status).toBe(200);
+      });
+  });
   test.skip('Should return inactive employees', () => {});
   test.skip('Should not return employee when ID is invalid', () => {});
 });
