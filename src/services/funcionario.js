@@ -22,8 +22,11 @@ module.exports = app => {
    * @since v1
    * @date 24/02/2021
    */
-  const findAll = () => {
-    return app.db('funcionarios').select(['fun_id', 'fun_nome']);
+  const findAll = (filter = {}) => {
+    return app
+      .db('funcionarios')
+      .select(['fun_id', 'fun_nome', 'fun_ativo'])
+      .where(filter);
   };
 
   const findOne = (filter = {}) => {
