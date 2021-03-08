@@ -26,7 +26,7 @@ module.exports = app => {
 
   router.get('/:id', (req, res, next) => {
     app.services.funcionario
-      .findOne({ fun_id: req.params.id })
+      .findById(req.params.id)
       .then(result => res.status(200).json(result))
       .catch(err => next(err));
   });
