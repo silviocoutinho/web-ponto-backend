@@ -50,10 +50,27 @@ describe('When listing employees ', () => {
       .get(`${MAIN_ROUTE}/ativos`)
       .then(res => {
         expect(res.status).toBe(200);
+        expect(res.body[0].fun_ativo).toBe(true);
       });
   });
-  test.skip('Should return inactive employees', () => {});
-  test.skip('Should not return employee when ID is invalid', () => {});
+  test('Should return inactive employees', () => {
+    return request(app)
+      .get(`${MAIN_ROUTE}/inativos`)
+      .then(res => {
+        expect(res.status).toBe(200);
+        expect(res.body[0].fun_ativo).toBe(false);
+      });
+  });
+  test('Should not return employee when ID is invalid', () => {
+    return request(app)
+      .get(`${MAIN_ROUTE}/a`)
+      .then(res => {
+        expect(res.status).toBe(400);
+        expect(res.body.error).toBe(
+          'ID inválido, é esperado um número inteiro',
+        );
+      });
+  });
 });
 
 describe('When save a new employee', () => {
