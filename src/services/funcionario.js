@@ -29,12 +29,40 @@ module.exports = app => {
       .where(filter);
   };
 
+  /**
+   * Retorna um unico registro que satifaz o filtro no recurso Funcionarios
+   * @function
+   * @name findOne
+   * @return {Array} Um Registro
+   * @author Silvio Coutinho <silviocoutinho@ymail.com>
+   * @since v1
+   * @date 24/02/2021
+   */
   const findOne = (filter = {}) => {
     return app.db('funcionarios').where(filter).first();
   };
+
+  /**
+   * Retorna um unico registro por Id recurso Funcionarios
+   * @function
+   * @name findById
+   * @return {Array} Um Registro
+   * @author Silvio Coutinho <silviocoutinho@ymail.com>
+   * @since v1
+   * @date 08/03/2021
+   */
+  const findById = id => {
+    try {
+      numberOrError(id, 'ID inválido, é esperado um número inteiro');
+    } catch (error) {
+      throw error;
+    }
+    return app.db('funcionarios').where({ fun_id: id }).first();
+  };
+
   const save = () => {};
   const setActive = () => {};
   const setInactive = () => {};
 
-  return { findAll, findOne, save };
+  return { findAll, findOne, findById, save };
 };
