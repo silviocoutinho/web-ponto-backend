@@ -74,6 +74,15 @@ describe('When listing employees ', () => {
 });
 
 describe('When save a new employee', () => {
+  const templateForSave = (newData, errorMessage) => {
+    return request(app)
+      .post(MAIN_ROUTE)
+      .send({ ...validEmployee, ...newData })
+      .then(res => {
+        expect(res.status).toBe(400);
+        expect(res.body.error).toBe(errorMessage);
+      });
+  };
   test.skip('Should save with encrypted password', () => {});
   test.skip('Should save with success', () => {});
   test.skip('Should not save without name', () => {});
