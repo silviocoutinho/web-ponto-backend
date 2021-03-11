@@ -74,6 +74,18 @@ describe('When listing employees ', () => {
 });
 
 describe('When save a new employee', () => {
+  const mailValidEmployee = `${Date.now()}@mail.com`;
+  let validEmployee = {
+    fun_data_cadastro: new Date(),
+    fun_adm: true,
+    fun_nome: 'Employee',
+    fun_usuario: `employee - ${Date.now()}`,
+    fun_senha: 'Test3D3Senh@',
+    fun_matricula: 101,
+    fun_pis: `${Date.now()}`,
+    //fun_email: mailValidEmployee,
+    fun_ativo: true,
+  };
   const templateForSave = (newData, errorMessage) => {
     return request(app)
       .post(MAIN_ROUTE)
@@ -83,8 +95,16 @@ describe('When save a new employee', () => {
         expect(res.body.error).toBe(errorMessage);
       });
   };
+  test('Should save with success', () => {
+    console.log(validEmployee);
+    return request(app)
+      .post(MAIN_ROUTE)
+      .send({ ...validEmployee })
+      .then(res => {
+        expect(res.status).toBe(200);
+      });
+  });
   test.skip('Should save with encrypted password', () => {});
-  test.skip('Should save with success', () => {});
   test.skip('Should not save without name', () => {});
   test.skip('Should not save without email', () => {});
   test.skip('Should not save without usuario', () => {});
