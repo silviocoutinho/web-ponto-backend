@@ -31,5 +31,13 @@ module.exports = app => {
       .catch(err => next(err));
   });
 
+  router.post('/', (req, res, next) => {
+    console.log(req.body);
+    app.services.funcionario
+      .save(null, { ...req.body })
+      .then(result => res.status(201).json(result))
+      .catch(err => next(err));
+  });
+
   return router;
 };
