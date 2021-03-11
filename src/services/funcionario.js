@@ -60,7 +60,28 @@ module.exports = app => {
     return app.db('funcionarios').where({ fun_id: id }).first();
   };
 
-  const save = () => {};
+  /**
+   * Salva um registro no recurso Funcionarios
+   * @function
+   * @name save
+   * @return {Array} usuario - O Id unico de um recurso
+   * @return {Number}  Um Array com os Ids dos registros  *
+   * @author Silvio Coutinho <silviocoutinho@ymail.com>
+   * @since v1
+   * @date 08/03/2021
+   */
+  const save = (id, funcionario, nomeTabela = 'funcionarios') => {
+    console.log(funcionario);
+    if (id) {
+      return app
+        .db(nomeTabela)
+        .update(funcionario)
+        .where({ id: funcionario.fun_id });
+    } else {
+      return app.db(nomeTabela).insert(funcionario);
+    }
+  };
+
   const setActive = () => {};
   const setInactive = () => {};
 
