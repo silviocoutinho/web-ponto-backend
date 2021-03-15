@@ -96,12 +96,11 @@ describe('When save a new employee', () => {
       });
   };
   test('Should save with success', () => {
-    console.log(validEmployee);
     return request(app)
       .post(MAIN_ROUTE)
       .send({ ...validEmployee })
       .then(res => {
-        expect(res.status).toBe(200);
+        expect(res.status).toBe(201);
       });
   });
   test.skip('Should save with encrypted password', () => {});

@@ -32,7 +32,6 @@ module.exports = app => {
   });
 
   router.post('/', (req, res, next) => {
-    console.log(req.body);
     app.services.funcionario
       .save(null, { ...req.body })
       .then(result => res.status(201).json(result))
