@@ -104,7 +104,12 @@ describe('When save a new employee', () => {
       });
   });
   test.skip('Should save with encrypted password', () => {});
-  test.skip('Should not save without name', () => {});
+  test('Should not save without name', () => {
+    templateForSave(
+      { fun_nome: null },
+      'Não foi informado o Nome do funcionário',
+    );
+  });
   test.skip('Should not save without email', () => {});
   test.skip('Should not save without usuario', () => {});
   test.skip('Should not save without password', () => {});
