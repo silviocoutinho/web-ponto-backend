@@ -71,7 +71,33 @@ module.exports = app => {
    * @date 08/03/2021
    */
   const save = (id, funcionario, nomeTabela = 'funcionarios') => {
-    console.log(funcionario);
+    try {
+      existsOrError(
+        funcionario.fun_nome,
+        'Não foi informado o Nome do funcionário',
+      );
+      existsOrError(
+        funcionario.fun_data_cadastro,
+        'Data de cadastro não informada',
+      );
+      existsOrError(
+        funcionario.fun_adm,
+        'Não foi informado se o funcionário é ou não administrador',
+      );
+      existsOrError(
+        funcionario.fun_usuario,
+        'Não foi informado o login do funcionário',
+      );
+      existsOrError(funcionario.fun_senha, 'Não foi informado a senha');
+      existsOrError(funcionario.fun_matricula, 'Não foi informado a matrícula');
+      existsOrError(funcionario.fun_pis, 'Não foi informado o número do PIS');
+      existsOrError(
+        funcionario.fun_ativo,
+        'Não foi informado se o funcionário está Ativo',
+      );
+    } catch (err) {
+      throw err;
+    }
     if (id) {
       return app
         .db(nomeTabela)
