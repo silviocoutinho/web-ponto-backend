@@ -123,8 +123,15 @@ describe('When save a new employee', () => {
   test('Should not save without matricula', () => {
     templateForSave({ fun_matricula: null }, 'Não foi informado a matrícula');
   });
-  test.skip('Should not save without pis', () => {});
-  test.skip('Should not save without ativo', () => {});
+  test('Should not save without pis', () => {
+    templateForSave({ fun_pis: null }, 'Não foi informado o número do PIS');
+  });
+  test('Should not save without ativo', () => {
+    templateForSave(
+      { fun_ativo: null },
+      'Não foi informado se o funcionário está Ativo',
+    );
+  });
   test.skip('', () => {});
   test.skip('', () => {});
 });
