@@ -111,7 +111,12 @@ describe('When save a new employee', () => {
     );
   });
   test.skip('Should not save without email', () => {});
-  test.skip('Should not save without usuario', () => {});
+  test('Should not save without usuario', () => {
+    templateForSave(
+      { fun_usuario: null },
+      'Não foi informado o login do funcionário',
+    );
+  });
   test.skip('Should not save without password', () => {});
   test.skip('Should not save without matricula', () => {});
   test.skip('Should not save without pis', () => {});
