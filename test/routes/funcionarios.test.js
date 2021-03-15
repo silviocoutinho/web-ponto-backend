@@ -117,8 +117,12 @@ describe('When save a new employee', () => {
       'Não foi informado o login do funcionário',
     );
   });
-  test.skip('Should not save without password', () => {});
-  test.skip('Should not save without matricula', () => {});
+  test('Should not save without password', () => {
+    templateForSave({ fun_senha: null }, 'Não foi informado a senha');
+  });
+  test('Should not save without matricula', () => {
+    templateForSave({ fun_matricula: null }, 'Não foi informado a matrícula');
+  });
   test.skip('Should not save without pis', () => {});
   test.skip('Should not save without ativo', () => {});
   test.skip('', () => {});
