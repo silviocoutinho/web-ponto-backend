@@ -9,8 +9,11 @@ const {
   strengthPassword,
 } = require('data-validation-cmjau');
 
+const { validateBr } = require('js-brasil');
+
 const RecursoNaoEncontrado = require('../errors/RecursoNaoEncontrado');
 const RecursoIndevidoError = require('../errors/RecursoIndevidoError');
+const ValidationError = require('../errors/ValidationError');
 
 module.exports = app => {
   /**
@@ -96,6 +99,10 @@ module.exports = app => {
         'Não foi informado se o funcionário está Ativo',
       );
       validLengthOrError(funcionario.fun_nome, 150, 5, 'nome');
+
+      if (!validateBr.pispasep(funcionario.fun_pis)) {
+        throw new ValidationError('PIS inválido!');
+      }
     } catch (err) {
       throw err;
     }
