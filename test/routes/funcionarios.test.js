@@ -110,11 +110,31 @@ describe('When save a new employee', () => {
       'Não foi informado o Nome do funcionário',
     );
   });
+  test('Should have a valid minimum length in employee name', () => {
+    templateForSave(
+      { fun_nome: 'Joao' },
+      'O limite mínimo de caracteres é de 5 para o campo nome',
+    );
+  });
+  test('Should have a valid maximun length in employee name', () => {
+    templateForSave(
+      {
+        fun_nome: 'J'.repeat(151),
+      },
+      'O limite máximo de caracteres é de 150 para o campo nome',
+    );
+  });
   test.skip('Should not save without email', () => {});
   test('Should not save without usuario', () => {
     templateForSave(
       { fun_usuario: null },
       'Não foi informado o login do funcionário',
+    );
+  });
+  test('Should have a valid minimum length in employee user name', () => {
+    templateForSave(
+      { fun_usuario: 'joao' },
+      'O limite mínimo de caracteres é de 5 para o campo usuário',
     );
   });
   test('Should not save without password', () => {
@@ -135,20 +155,7 @@ describe('When save a new employee', () => {
   test('Should not save if PIS is not valid', () => {
     templateForSave({ fun_pis: '64860185980' }, 'PIS inválido!');
   });
-  test('Should have a valid minimum length in employee name', () => {
-    templateForSave(
-      { fun_nome: 'Joao' },
-      'O limite mínimo de caracteres é de 5 para o campo nome',
-    );
-  });
-  test('Should have a valid maximun length in employee name', () => {
-    templateForSave(
-      {
-        fun_nome: 'J'.repeat(151),
-      },
-      'O limite máximo de caracteres é de 150 para o campo nome',
-    );
-  });
+
   test.skip('', () => {});
   test.skip('', () => {});
   test.skip('', () => {});
