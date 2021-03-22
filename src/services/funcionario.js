@@ -79,6 +79,7 @@ module.exports = app => {
         funcionario.fun_nome,
         'Não foi informado o Nome do funcionário',
       );
+      validLengthOrError(funcionario.fun_nome, 150, 5, 'nome');
       existsOrError(
         funcionario.fun_data_cadastro,
         'Data de cadastro não informada',
@@ -91,6 +92,7 @@ module.exports = app => {
         funcionario.fun_usuario,
         'Não foi informado o login do funcionário',
       );
+      validLengthOrError(funcionario.fun_usuario, 150, 5, 'usuário');
       existsOrError(funcionario.fun_senha, 'Não foi informado a senha');
       existsOrError(funcionario.fun_matricula, 'Não foi informado a matrícula');
       existsOrError(funcionario.fun_pis, 'Não foi informado o número do PIS');
@@ -98,7 +100,6 @@ module.exports = app => {
         funcionario.fun_ativo,
         'Não foi informado se o funcionário está Ativo',
       );
-      validLengthOrError(funcionario.fun_nome, 150, 5, 'nome');
 
       if (!validateBr.pispasep(funcionario.fun_pis)) {
         throw new ValidationError('PIS inválido!');
