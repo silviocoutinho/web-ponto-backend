@@ -86,12 +86,12 @@ describe('When save a new employee', () => {
     //fun_email: mailValidEmployee,
     fun_ativo: true,
   };
-  const templateForSave = (newData, errorMessage) => {
+  const templateForSave = (newData, errorMessage, code = 400) => {
     return request(app)
       .post(MAIN_ROUTE)
       .send({ ...validEmployee, ...newData })
       .then(res => {
-        expect(res.status).toBe(400);
+        expect(res.status).toBe(code);
         expect(res.body.error).toBe(errorMessage);
       });
   };
@@ -139,6 +139,12 @@ describe('When save a new employee', () => {
   });
   test('Should not save without password', () => {
     templateForSave({ fun_senha: null }, 'Não foi informado a senha');
+  });
+  test('Should have 10 characters length in employee password', () => {
+    templateForSave(
+      { fun_senha: 'Tst3D#Sen' },
+      'A senha deve conter no mínimo 10 caracteres',
+    );
   });
   test('Should not save without matricula', () => {
     templateForSave({ fun_matricula: null }, 'Não foi informado a matrícula');
