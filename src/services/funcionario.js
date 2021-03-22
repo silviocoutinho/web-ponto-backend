@@ -95,6 +95,7 @@ module.exports = app => {
         funcionario.fun_ativo,
         'Não foi informado se o funcionário está Ativo',
       );
+      validLengthOrError(funcionario.fun_nome, 150, 5, 'nome');
     } catch (err) {
       throw err;
     }
