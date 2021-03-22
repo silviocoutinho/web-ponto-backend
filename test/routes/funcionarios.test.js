@@ -132,6 +132,21 @@ describe('When save a new employee', () => {
       'Não foi informado se o funcionário está Ativo',
     );
   });
+  test.skip('Should not save if PIS is not valid', () => {});
+  test('Should have a valid minimum length in employee name', () => {
+    templateForSave(
+      { fun_nome: 'Joao' },
+      'O limite mínimo de caracteres é de 5 para o campo nome',
+    );
+  });
+  test('Should have a valid maximun length in employee name', () => {
+    templateForSave(
+      { fun_nome: 'Joaooooooaaa daaaaaaa Silvaaaaaaaaaaaaaaaaaaa' },
+      'O limite máximo de caracteres é de 150 para o campo nome',
+    );
+  });
+  test.skip('', () => {});
+  test.skip('', () => {});
   test.skip('', () => {});
   test.skip('', () => {});
 });
