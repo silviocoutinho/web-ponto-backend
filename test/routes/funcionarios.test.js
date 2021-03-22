@@ -82,7 +82,7 @@ describe('When save a new employee', () => {
     fun_usuario: `employee - ${Date.now()}`,
     fun_senha: 'Test3D3Senh@',
     fun_matricula: 101,
-    fun_pis: `${Date.now()}`,
+    fun_pis: `648.60185.98-9`,
     //fun_email: mailValidEmployee,
     fun_ativo: true,
   };
@@ -132,7 +132,9 @@ describe('When save a new employee', () => {
       'Não foi informado se o funcionário está Ativo',
     );
   });
-  test.skip('Should not save if PIS is not valid', () => {});
+  test('Should not save if PIS is not valid', () => {
+    templateForSave({ fun_pis: '64860185980' }, 'PIS inválido!');
+  });
   test('Should have a valid minimum length in employee name', () => {
     templateForSave(
       { fun_nome: 'Joao' },
@@ -141,7 +143,9 @@ describe('When save a new employee', () => {
   });
   test('Should have a valid maximun length in employee name', () => {
     templateForSave(
-      { fun_nome: 'Joaooooooaaa daaaaaaa Silvaaaaaaaaaaaaaaaaaaa' },
+      {
+        fun_nome: 'J'.repeat(151),
+      },
       'O limite máximo de caracteres é de 150 para o campo nome',
     );
   });
