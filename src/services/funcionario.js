@@ -93,7 +93,12 @@ module.exports = app => {
         'Não foi informado o login do funcionário',
       );
       validLengthOrError(funcionario.fun_usuario, 150, 5, 'usuário');
-      existsOrError(funcionario.fun_senha, 'Não foi informado a senha');
+
+      if (id === null) {
+        existsOrError(funcionario.fun_senha, 'Não foi informado a senha');
+        strengthPassword(funcionario.fun_senha);
+      }
+
       existsOrError(funcionario.fun_matricula, 'Não foi informado a matrícula');
       existsOrError(funcionario.fun_pis, 'Não foi informado o número do PIS');
       existsOrError(
