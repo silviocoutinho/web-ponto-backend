@@ -143,6 +143,12 @@ describe('When save a new employee', () => {
       'O limite mínimo de caracteres é de 5 para o campo usuário',
     );
   });
+  test('Should have not only numbers in employee user name', () => {
+    templateForSave(
+      { fun_usuario: 12345 },
+      'É esperado um valor textual para o campo Usuário do Funcionário!',
+    );
+  });
   test('Should not save without password', () => {
     templateForSave({ fun_senha: null }, 'Não foi informado a senha');
   });
