@@ -5,6 +5,7 @@ const {
   validEmailOrError,
   numberOrError,
   positiveOrError,
+  validTypeOfOrError,
   dateOrError,
   validLengthOrError,
   strengthPassword,
@@ -81,6 +82,11 @@ module.exports = app => {
         'Não foi informado o Nome do funcionário',
       );
       validLengthOrError(funcionario.fun_nome, 150, 5, 'nome');
+      validTypeOfOrError(
+        funcionario.fun_nome,
+        'string',
+        'É esperado um valor textual para Nome do Funcionário!',
+      );
       existsOrError(
         funcionario.fun_data_cadastro,
         'Data de cadastro não informada',
