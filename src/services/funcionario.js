@@ -112,6 +112,11 @@ module.exports = app => {
       }
 
       existsOrError(funcionario.fun_matricula, 'Não foi informado a matrícula');
+      numberOrError(
+        funcionario.fun_matricula,
+        'É esperado um valor numérico para matrícula!',
+      );
+
       existsOrError(funcionario.fun_pis, 'Não foi informado o número do PIS');
       existsOrError(
         funcionario.fun_ativo,
