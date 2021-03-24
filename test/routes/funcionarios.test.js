@@ -124,6 +124,12 @@ describe('When save a new employee', () => {
       'O limite máximo de caracteres é de 150 para o campo nome',
     );
   });
+  test('Should have not only numbers in employee name', () => {
+    templateForSave(
+      { fun_nome: 12345 },
+      'É esperado um valor textual para Nome do Funcionário!',
+    );
+  });
   test.skip('Should not save without email', () => {});
   test('Should not save without usuario', () => {
     templateForSave(
