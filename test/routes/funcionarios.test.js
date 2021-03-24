@@ -104,6 +104,12 @@ describe('When save a new employee', () => {
       });
   });
   test.skip('Should save with encrypted password', () => {});
+  test('Should not save without value in adm', () => {
+    templateForSave(
+      { fun_adm: null },
+      'Não foi informado se o funcionário é ou não Administrador!',
+    );
+  });
   test('Should not save without name', () => {
     templateForSave(
       { fun_nome: null },
@@ -191,6 +197,9 @@ describe('When save a new employee', () => {
       'Data de cadastro inválida!',
     );
   });
+
+  describe('When update a employee', () => {});
+  describe('When delete a employee', () => {});
 
   test.skip('', () => {});
   test.skip('', () => {});
