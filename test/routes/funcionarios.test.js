@@ -167,6 +167,12 @@ describe('When save a new employee', () => {
   test('Should not save without matricula', () => {
     templateForSave({ fun_matricula: null }, 'Não foi informado a matrícula');
   });
+  test('Should have only numbers in employee matricula', () => {
+    templateForSave(
+      { fun_matricula: 'abc' },
+      'É esperado um valor numérico para matrícula!',
+    );
+  });
   test('Should not save without pis', () => {
     templateForSave({ fun_pis: null }, 'Não foi informado o número do PIS');
   });
