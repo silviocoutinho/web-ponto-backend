@@ -161,6 +161,12 @@ describe('When save a new employee', () => {
   test('Should not save if PIS is not valid', () => {
     templateForSave({ fun_pis: '64860185980' }, 'PIS inválido!');
   });
+  test('Should not save if fun_data_cadastro is not a valid Date', () => {
+    templateForSave(
+      { fun_data_cadastro: '25/25/25' },
+      'Data de cadastro inválida!',
+    );
+  });
 
   test.skip('', () => {});
   test.skip('', () => {});
