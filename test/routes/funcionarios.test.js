@@ -139,6 +139,12 @@ describe('When save a new employee', () => {
   });
   test('Should have a valid minimum length in employee user name', () => {
     templateForSave(
+      { fun_usuario: 'J'.repeat(151) },
+      'O limite máximo de caracteres é de 150 para o campo usuário',
+    );
+  });
+  test('Should have a valid maximun length in employee user name', () => {
+    templateForSave(
       { fun_usuario: 'joao' },
       'O limite mínimo de caracteres é de 5 para o campo usuário',
     );
