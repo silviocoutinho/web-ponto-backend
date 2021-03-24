@@ -5,6 +5,7 @@ const {
   validEmailOrError,
   numberOrError,
   positiveOrError,
+  dateOrError,
   validLengthOrError,
   strengthPassword,
 } = require('data-validation-cmjau');
@@ -105,6 +106,8 @@ module.exports = app => {
         funcionario.fun_ativo,
         'Não foi informado se o funcionário está Ativo',
       );
+
+      dateOrError(funcionario.fun_data_cadastro, 'Data de cadastro inválida!');
 
       if (!validateBr.pispasep(funcionario.fun_pis)) {
         throw new ValidationError('PIS inválido!');
