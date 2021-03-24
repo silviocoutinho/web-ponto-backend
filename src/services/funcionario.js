@@ -78,6 +78,10 @@ module.exports = app => {
   const save = (id, funcionario, nomeTabela = 'funcionarios') => {
     try {
       existsOrError(
+        funcionario.fun_adm,
+        'Não foi informado se o funcionário é ou não Administrador!',
+      );
+      existsOrError(
         funcionario.fun_nome,
         'Não foi informado o Nome do funcionário',
       );
