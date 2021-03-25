@@ -147,7 +147,22 @@ module.exports = app => {
   };
 
   const setActive = () => {};
-  const setInactive = () => {};
 
-  return { findAll, findOne, findById, save };
+  /**
+   * Deixa o funcionario inativo no sistema, setando
+   * o valor fun_ativo para false
+   * @function
+   * @name setInactive
+   * @author Silvio Coutinho <silviocoutinho@ymail.com>
+   * @since v1
+   * @date 25/03/2021
+   */
+  const setInactive = (id, nomeTabela = 'funcionarios') => {
+    return app
+      .db(nomeTabela)
+      .update({ fun_ativo: false })
+      .where({ fun_id: id });
+  };
+
+  return { findAll, findOne, findById, save, setInactive };
 };
