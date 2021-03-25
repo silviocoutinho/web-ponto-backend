@@ -6,6 +6,7 @@ const MAIN_ROUTE = `${VERSION_API}/funcionarios`;
 
 let admID = 0;
 let lastID = 0;
+let validEmployee;
 
 beforeAll(async () => {
   lastID = await app
@@ -26,6 +27,19 @@ beforeAll(async () => {
   };
   const user = await app.db('funcionarios').insert([userAdm], '*');
   admID = user[0].fun_id;
+
+  const mailValidEmployee = `${Date.now()}@mail.com`;
+  validEmployee = {
+    fun_data_cadastro: new Date(),
+    fun_adm: true,
+    fun_nome: 'Employee',
+    fun_usuario: `employee - ${Date.now()}`,
+    fun_senha: 'Test3D3Senh@',
+    fun_matricula: 101,
+    fun_pis: `648.60185.98-9`,
+    //fun_email: mailValidEmployee,
+    fun_ativo: true,
+  };
 });
 
 describe('When listing employees ', () => {
@@ -74,18 +88,6 @@ describe('When listing employees ', () => {
 });
 
 describe('When save a new employee', () => {
-  const mailValidEmployee = `${Date.now()}@mail.com`;
-  let validEmployee = {
-    fun_data_cadastro: new Date(),
-    fun_adm: true,
-    fun_nome: 'Employee',
-    fun_usuario: `employee - ${Date.now()}`,
-    fun_senha: 'Test3D3Senh@',
-    fun_matricula: 101,
-    fun_pis: `648.60185.98-9`,
-    //fun_email: mailValidEmployee,
-    fun_ativo: true,
-  };
   const templateForSave = (newData, errorMessage, code = 400) => {
     return request(app)
       .post(MAIN_ROUTE)
@@ -198,11 +200,23 @@ describe('When save a new employee', () => {
     );
   });
 
-  describe('When update a employee', () => {});
-  describe('When delete a employee', () => {});
-
   test.skip('', () => {});
   test.skip('', () => {});
   test.skip('', () => {});
   test.skip('', () => {});
 });
+
+describe('When update a employee', () => {
+  test('Should have a valid number in employee id', () => {
+    return request(app)
+      .put(`${MAIN_ROUTE}/abc`)
+      .send({ ...validEmployee })
+      .then(res => {
+        expect(res.status).toBe(400);
+        expect(res.body.error).toBe(
+          'ID inválido, é esperado um número inteiro',
+        );
+      });
+  });
+});
+describe('When delete a employee', () => {});
