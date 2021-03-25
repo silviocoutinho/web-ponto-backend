@@ -203,7 +203,6 @@ describe('When save a new employee', () => {
   test.skip('', () => {});
   test.skip('', () => {});
   test.skip('', () => {});
-  test.skip('', () => {});
 });
 
 describe('When update a employee', () => {
@@ -219,4 +218,12 @@ describe('When update a employee', () => {
       });
   });
 });
-describe('When delete a employee', () => {});
+describe('When delete a employee', () => {
+  test('Should delete with success', () => {
+    return request(app)
+      .delete(`${MAIN_ROUTE}/${admID}`)
+      .then(res => {
+        expect(res.status).toBe(201);
+      });
+  });
+});
