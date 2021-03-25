@@ -77,6 +77,10 @@ module.exports = app => {
    */
   const save = (id, funcionario, nomeTabela = 'funcionarios') => {
     try {
+      if (id) {
+        numberOrError(id, 'ID inválido, é esperado um número inteiro');
+      }
+
       existsOrError(
         funcionario.fun_adm,
         'Não foi informado se o funcionário é ou não Administrador!',
@@ -136,10 +140,7 @@ module.exports = app => {
       throw err;
     }
     if (id) {
-      return app
-        .db(nomeTabela)
-        .update(funcionario)
-        .where({ id: funcionario.fun_id });
+      return app.db(nomeTabela).update(funcionario).where({ fun_id: id });
     } else {
       return app.db(nomeTabela).insert(funcionario);
     }
