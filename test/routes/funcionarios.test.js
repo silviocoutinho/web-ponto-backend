@@ -107,7 +107,30 @@ describe('When save a new employee', () => {
         expect(res.body[0]).not.toHaveProperty('fun_passwd');
       });
   });
-  test.skip('Should save with encrypted password', () => {});
+  test('Should save with encrypted password', async () => {
+    const employeeWithPass = {
+      fun_data_cadastro: new Date(),
+      fun_adm: true,
+      fun_nome: 'Employee with Password',
+      fun_usuario: `employee - ${Date.now()}`,
+      fun_senha: 'Test3D3Senh@',
+      fun_passwd: `Test3D3Senh@${Date.now()}`,
+      fun_matricula: 101,
+      fun_pis: `648.60185.98-9`,
+      //fun_email: mailValidEmployee,
+      fun_ativo: true,
+    };
+
+    const res = await request(app)
+      .post(MAIN_ROUTE)
+      .send({ ...employeeWithPass });
+    expect(res.status).toBe(201);
+
+    const { fun_id } = res.body[0];
+    const funcDB = await app.services.funcionario.findById(fun_id);
+    expect(funcDB.fun_passwd).not.toBeUndefined();
+    expect(funcDB.fun_passwd).not.toBe(employeeWithPass.fun_passwd);
+  });
   test('Should not save without value in adm', () => {
     templateForSave(
       { fun_adm: null },
