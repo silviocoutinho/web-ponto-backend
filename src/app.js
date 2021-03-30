@@ -7,6 +7,7 @@ const db = require('./config/db');
 app.db = db;
 
 consign({ cwd: 'src', verbose: false })
+  .include('config/passport.js')
   .include('config/middlewares.js')
   .then('./services')
   .then('./routes')
