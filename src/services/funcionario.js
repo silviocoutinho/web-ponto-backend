@@ -17,6 +17,14 @@ const RecursoNaoEncontrado = require('../errors/RecursoNaoEncontrado');
 const RecursoIndevidoError = require('../errors/RecursoIndevidoError');
 const ValidationError = require('../errors/ValidationError');
 
+const fieldsFromDB = [
+  'fun_id',
+  'fun_nome',
+  'fun_matricula',
+  'fun_pis',
+  'fun_ativo',
+];
+
 module.exports = app => {
   /**
    * Retorna todos os registros no recurso Funcionarios
@@ -28,10 +36,7 @@ module.exports = app => {
    * @date 24/02/2021
    */
   const findAll = (filter = {}) => {
-    return app
-      .db('funcionarios')
-      .select(['fun_id', 'fun_nome', 'fun_ativo'])
-      .where(filter);
+    return app.db('funcionarios').select(fieldsFromDB).where(filter);
   };
 
   /**
@@ -44,7 +49,7 @@ module.exports = app => {
    * @date 24/02/2021
    */
   const findOne = (filter = {}) => {
-    return app.db('funcionarios').where(filter).first();
+    return app.db('funcionarios').where(filter).select(fieldsFromDB).first();
   };
 
   /**
@@ -140,9 +145,12 @@ module.exports = app => {
       throw err;
     }
     if (id) {
-      return app.db(nomeTabela).update(funcionario).where({ fun_id: id });
+      return app
+        .db(nomeTabela)
+        .update(funcionario, fieldsFromDB)
+        .where({ fun_id: id });
     } else {
-      return app.db(nomeTabela).insert(funcionario);
+      return app.db(nomeTabela).insert(funcionario, fieldsFromDB);
     }
   };
 
