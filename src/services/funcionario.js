@@ -12,6 +12,7 @@ const {
 } = require('data-validation-cmjau');
 
 const { validateBr } = require('js-brasil');
+const bcrypt = require('bcrypt');
 
 const RecursoNaoEncontrado = require('../errors/RecursoNaoEncontrado');
 const RecursoIndevidoError = require('../errors/RecursoIndevidoError');
@@ -26,6 +27,20 @@ const fieldsFromDB = [
 ];
 
 module.exports = app => {
+  /**
+   * Criptografa a senha do usuario
+   * @function
+   * @name encryptPassword
+   * @return {String} Uma senha criptografada
+   * @author Silvio Coutinho <silviocoutinho@ymail.com>
+   * @since v1
+   * @date 30/03/2021
+   */
+  const encryptPassword = (password, saltRounds) => {
+    const salt = bcrypt.genSaltSync(saltRounds);
+    return bcrypt.hashSync(password, salt);
+  };
+
   /**
    * Retorna todos os registros no recurso Funcionarios
    * @function
@@ -144,6 +159,12 @@ module.exports = app => {
     } catch (err) {
       throw err;
     }
+
+    if (funcionario.fun_passwd) {
+      funcionario.fun_passwd = encryptPassword(funcionario.fun_passwd, 10);
+      //delete funcionario.confirmPassword;
+    }
+
     if (id) {
       return app
         .db(nomeTabela)
