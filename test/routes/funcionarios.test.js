@@ -35,6 +35,7 @@ beforeAll(async () => {
     fun_nome: 'Employee',
     fun_usuario: `employee - ${Date.now()}`,
     fun_senha: 'Test3D3Senh@',
+    fun_passwd: `Test3D3Senh@${Date.now()}`,
     fun_matricula: 101,
     fun_pis: `648.60185.98-9`,
     //fun_email: mailValidEmployee,
@@ -103,6 +104,7 @@ describe('When save a new employee', () => {
       .send({ ...validEmployee })
       .then(res => {
         expect(res.status).toBe(201);
+        expect(res.body[0]).not.toHaveProperty('fun_passwd');
       });
   });
   test.skip('Should save with encrypted password', () => {});
