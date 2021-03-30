@@ -162,7 +162,7 @@ module.exports = app => {
 
     if (funcionario.fun_passwd) {
       funcionario.fun_passwd = encryptPassword(funcionario.fun_passwd, 10);
-      //delete funcionario.confirmPassword;
+      delete funcionario.fun_confirmPasswd;
     }
 
     if (id) {
