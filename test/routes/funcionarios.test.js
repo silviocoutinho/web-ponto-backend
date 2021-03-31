@@ -250,9 +250,10 @@ describe('When save a new employee', () => {
 });
 
 describe('When update a employee', () => {
-  test.skip('Should have a valid number in employee id', () => {
+  test('Should have a valid number in employee id', () => {
     return request(app)
       .put(`${MAIN_ROUTE}/abc`)
+      .set('authorization', `bearer ${adminToken}`)
       .send({ ...validEmployee })
       .then(res => {
         expect(res.status).toBe(400);
