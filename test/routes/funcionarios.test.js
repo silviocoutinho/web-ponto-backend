@@ -40,6 +40,7 @@ beforeAll(async () => {
         })
         .then(res => {
           adminToken = res.body.token;
+          admID = res.body.id;
         }),
     );
 
@@ -67,34 +68,37 @@ describe('When listing employees ', () => {
         expect(res.status).toBe(200);
       });
   });
-  test.skip('Should return one employee by ID', () => {
+  test('Should return one employee by ID', () => {
     return request(app)
       .get(`${MAIN_ROUTE}/${admID}`)
+      .set('authorization', `bearer ${adminToken}`)
       .then(res => {
         expect(res.status).toBe(200);
-        expect(res.body.fun_nome).toBe('Admin');
-        expect(res.body.fun_usuario).toBe('admin');
+        expect(res.body.fun_nome).toBe('Employee Admin');
       });
   });
-  test.skip('Should return active employees', () => {
+  test('Should return active employees', () => {
     return request(app)
       .get(`${MAIN_ROUTE}/ativos`)
+      .set('authorization', `bearer ${adminToken}`)
       .then(res => {
         expect(res.status).toBe(200);
         expect(res.body[0].fun_ativo).toBe(true);
       });
   });
-  test.skip('Should return inactive employees', () => {
+  test('Should return inactive employees', () => {
     return request(app)
       .get(`${MAIN_ROUTE}/inativos`)
+      .set('authorization', `bearer ${adminToken}`)
       .then(res => {
         expect(res.status).toBe(200);
         expect(res.body[0].fun_ativo).toBe(false);
       });
   });
-  test.skip('Should not return employee when ID is invalid', () => {
+  test('Should not return employee when ID is invalid', () => {
     return request(app)
       .get(`${MAIN_ROUTE}/a`)
+      .set('authorization', `bearer ${adminToken}`)
       .then(res => {
         expect(res.status).toBe(400);
         expect(res.body.error).toBe(
