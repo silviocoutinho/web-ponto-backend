@@ -112,22 +112,24 @@ describe('When save a new employee', () => {
   const templateForSave = (newData, errorMessage, code = 400) => {
     return request(app)
       .post(MAIN_ROUTE)
+      .set('authorization', `bearer ${adminToken}`)
       .send({ ...validEmployee, ...newData })
       .then(res => {
         expect(res.status).toBe(code);
         expect(res.body.error).toBe(errorMessage);
       });
   };
-  test.skip('Should save with success', () => {
+  test('Should save with success', () => {
     return request(app)
       .post(MAIN_ROUTE)
       .send({ ...validEmployee })
+      .set('authorization', `bearer ${adminToken}`)
       .then(res => {
         expect(res.status).toBe(201);
         expect(res.body[0]).not.toHaveProperty('fun_passwd');
       });
   });
-  test.skip('Should save with encrypted password', async () => {
+  test('Should save with encrypted password', async () => {
     const employeeWithPass = {
       fun_data_cadastro: new Date(),
       fun_adm: true,
@@ -143,6 +145,7 @@ describe('When save a new employee', () => {
 
     const res = await request(app)
       .post(MAIN_ROUTE)
+      .set('authorization', `bearer ${adminToken}`)
       .send({ ...employeeWithPass });
     expect(res.status).toBe(201);
 
@@ -151,13 +154,13 @@ describe('When save a new employee', () => {
     expect(funcDB.fun_passwd).not.toBeUndefined();
     expect(funcDB.fun_passwd).not.toBe(employeeWithPass.fun_passwd);
   });
-  test.skip('Should not save without value in adm', () => {
+  test('Should not save without value in adm', () => {
     templateForSave(
       { fun_adm: null },
       'Não foi informado se o funcionário é ou não Administrador!',
     );
   });
-  test.skip('Should not save without name', () => {
+  test('Should not save without name', () => {
     templateForSave(
       { fun_nome: null },
       'Não foi informado o Nome do funcionário',
@@ -169,7 +172,7 @@ describe('When save a new employee', () => {
       'O limite mínimo de caracteres é de 5 para o campo nome',
     );
   });
-  test.skip('Should have a valid maximun length in employee name', () => {
+  test('Should have a valid maximun length in employee name', () => {
     templateForSave(
       {
         fun_nome: 'J'.repeat(151),
@@ -177,77 +180,73 @@ describe('When save a new employee', () => {
       'O limite máximo de caracteres é de 150 para o campo nome',
     );
   });
-  test.skip('Should have not only numbers in employee name', () => {
+  test('Should have not only numbers in employee name', () => {
     templateForSave(
       { fun_nome: 12345 },
       'É esperado um valor textual para Nome do Funcionário!',
     );
   });
   test.skip('Should not save without email', () => {});
-  test.skip('Should not save without usuario', () => {
+  test('Should not save without usuario', () => {
     templateForSave(
       { fun_usuario: null },
       'Não foi informado o login do funcionário',
     );
   });
-  test.skip('Should have a valid minimum length in employee user name', () => {
+  test('Should have a valid minimum length in employee user name', () => {
     templateForSave(
       { fun_usuario: 'J'.repeat(151) },
       'O limite máximo de caracteres é de 150 para o campo usuário',
     );
   });
-  test.skip('Should have a valid maximun length in employee user name', () => {
+  test('Should have a valid maximun length in employee user name', () => {
     templateForSave(
       { fun_usuario: 'joao' },
       'O limite mínimo de caracteres é de 5 para o campo usuário',
     );
   });
-  test.skip('Should have not only numbers in employee user name', () => {
+  test('Should have not only numbers in employee user name', () => {
     templateForSave(
       { fun_usuario: 12345 },
       'É esperado um valor textual para o campo Usuário do Funcionário!',
     );
   });
-  test.skip('Should not save without password', () => {
+  test('Should not save without password', () => {
     templateForSave({ fun_senha: null }, 'Não foi informado a senha');
   });
-  test.skip('Should have 10 characters length in employee password', () => {
+  test('Should have 10 characters length in employee password', () => {
     templateForSave(
       { fun_senha: 'Tst3D#Sen' },
       'A senha deve conter no mínimo 10 caracteres',
     );
   });
-  test.skip('Should not save without matricula', () => {
+  test('Should not save without matricula', () => {
     templateForSave({ fun_matricula: null }, 'Não foi informado a matrícula');
   });
-  test.skip('Should have only numbers in employee matricula', () => {
+  test('Should have only numbers in employee matricula', () => {
     templateForSave(
       { fun_matricula: 'abc' },
       'É esperado um valor numérico para matrícula!',
     );
   });
-  test.skip('Should not save without pis', () => {
+  test('Should not save without pis', () => {
     templateForSave({ fun_pis: null }, 'Não foi informado o número do PIS');
   });
-  test.skip('Should not save without ativo', () => {
+  test('Should not save without ativo', () => {
     templateForSave(
       { fun_ativo: null },
       'Não foi informado se o funcionário está Ativo',
     );
   });
-  test.skip('Should not save if PIS is not valid', () => {
+  test('Should not save if PIS is not valid', () => {
     templateForSave({ fun_pis: '64860185980' }, 'PIS inválido!');
   });
-  test.skip('Should not save if fun_data_cadastro is not a valid Date', () => {
+  test('Should not save if fun_data_cadastro is not a valid Date', () => {
     templateForSave(
       { fun_data_cadastro: '25/25/25' },
       'Data de cadastro inválida!',
     );
   });
-
-  test.skip('', () => {});
-  test.skip('', () => {});
-  test.skip('', () => {});
 });
 
 describe('When update a employee', () => {
