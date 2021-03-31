@@ -166,7 +166,7 @@ describe('When save a new employee', () => {
       'Não foi informado o Nome do funcionário',
     );
   });
-  test.skip('Should have a valid minimum length in employee name', () => {
+  test('Should have a valid minimum length in employee name', () => {
     templateForSave(
       { fun_nome: 'Joao' },
       'O limite mínimo de caracteres é de 5 para o campo nome',
