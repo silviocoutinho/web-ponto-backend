@@ -8,7 +8,7 @@ app.db = db;
 
 consign({ cwd: 'src', verbose: false })
   .include('config/passport.js')
-  .include('config/middlewares.js')
+  .then('config/middlewares.js')
   .then('./services')
   .then('./routes')
   .then('./config/router.js')
