@@ -17,37 +17,50 @@
   "tags": [
     {
       "name": "Funcionarios",
-      "description": "API for funcionários in the system"
+      "description": "API for Employees (funcionários) in the system"
     }
   ],
-  "schemes": ["http"],
-  "consumes": ["application/json"],
-  "produces": ["application/json"],
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
   "paths": {
     "/funcionarios": {
       "get": {
-        "tags": ["Funcionarios"],
-        "summary": "Get all Funcionarios in system",
+        "tags": [
+          "Funcionarios"
+        ],
+        "summary": "Get all Employees (Funcionarios) in system",
         "responses": {
           "200": {
             "description": "OK",
             "schema": {
               "$ref": "#/definitions/Funcionarios"
             }
+          },
+          "401": {
+            "description": "Unauthorized"
           }
         }
       }
     },
     "/funcionarios/{id}": {
       "get": {
-        "tags": ["Funcionarios"],
-        "summary": "Get One Funcionario in system",
+        "tags": [
+          "Funcionarios"
+        ],
+        "summary": "Get One Employee (Funcionario) in system",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "ID of user that we want to find",
+            "description": "ID of employee that we want to find",
             "type": "integer"
           }
         ],
@@ -63,8 +76,10 @@
     },
     "/funcionarios/ativos": {
       "get": {
-        "tags": ["Funcionarios"],
-        "summary": "Get Active Funcionarios in system",
+        "tags": [
+          "Funcionarios"
+        ],
+        "summary": "Get Active Employees (Funcionarios) in system",
         "responses": {
           "200": {
             "description": "OK",
@@ -77,8 +92,10 @@
     },
     "/funcionarios/inativos": {
       "get": {
-        "tags": ["Funcionarios"],
-        "summary": "Get Inactive Funcionarios in system",
+        "tags": [
+          "Funcionarios"
+        ],
+        "summary": "Get Inactive Employees (Funcionarios) in system",
         "responses": {
           "200": {
             "description": "OK",
@@ -92,7 +109,10 @@
   },
   "definitions": {
     "Funcionario": {
-      "required": ["fun_nome", "fun_id"],
+      "required": [
+        "fun_nome",
+        "fun_id"
+      ],
       "properties": {
         "fun_id": {
           "type": "integer",
@@ -104,7 +124,10 @@
       }
     },
     "updateFuncionario": {
-      "required": ["fun_nome", "fun_id"],
+      "required": [
+        "fun_nome",
+        "fun_id"
+      ],
       "properties": {
         "fun_nome": {
           "type": "string"
