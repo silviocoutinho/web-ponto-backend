@@ -1,0 +1,119 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "API REST Web Ponto",
+    "description": "This API that provides access to Employee Data, Time Sheet, Payslip. This was developed to CM Jau.",
+    "contact": {
+      "email": "informatica@camarajau.sp.gov.br"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "host": "localhost:3005",
+  "basePath": "/v1",
+  "tags": [
+    {
+      "name": "Funcionarios",
+      "description": "API for funcionários in the system"
+    }
+  ],
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/funcionarios": {
+      "get": {
+        "tags": ["Funcionarios"],
+        "summary": "Get all Funcionarios in system",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Funcionarios"
+            }
+          }
+        }
+      }
+    },
+    "/funcionarios/{id}": {
+      "get": {
+        "tags": ["Funcionarios"],
+        "summary": "Get One Funcionario in system",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of user that we want to find",
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Funcionarios"
+            }
+          }
+        }
+      }
+    },
+    "/funcionarios/ativos": {
+      "get": {
+        "tags": ["Funcionarios"],
+        "summary": "Get Active Funcionarios in system",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Funcionarios"
+            }
+          }
+        }
+      }
+    },
+    "/funcionarios/inativos": {
+      "get": {
+        "tags": ["Funcionarios"],
+        "summary": "Get Inactive Funcionarios in system",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Funcionarios"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Funcionario": {
+      "required": ["fun_nome", "fun_id"],
+      "properties": {
+        "fun_id": {
+          "type": "integer",
+          "uniqueItems": true
+        },
+        "fun_nome": {
+          "type": "string"
+        }
+      }
+    },
+    "updateFuncionario": {
+      "required": ["fun_nome", "fun_id"],
+      "properties": {
+        "fun_nome": {
+          "type": "string"
+        }
+      }
+    },
+    "Funcionarios": {
+      "type": "array",
+      "$ref": "#/definitions/Funcionario"
+    }
+  }
+}
