@@ -4,6 +4,10 @@ const consign = require('consign');
 const { ENV } = require('../.env');
 const db = require('./config/db');
 
+//Swagger Lib
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger/swagger.json');
+
 app.db = db;
 
 consign({ cwd: 'src', verbose: false })
@@ -17,6 +21,8 @@ consign({ cwd: 'src', verbose: false })
 app.get('/', (req, res) => {
   return res.status(200).send('Teste');
 });
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use((err, req, res, next) => {
   const { name, message, stack } = err;
