@@ -31,7 +31,7 @@ module.exports = app => {
       .catch(err => next(err));
   });
 
-  router.post('/', (req, res, next) => {
+  router.post('/adicionar/', (req, res, next) => {
     app.services.funcionario
       .save(null, { ...req.body })
       .then(result => res.status(201).json(result))
