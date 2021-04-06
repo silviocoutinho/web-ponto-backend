@@ -20,21 +20,13 @@
       "description": "API for Employees (funcionários) in the system"
     }
   ],
-  "schemes": [
-    "http"
-  ],
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
-  ],
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
   "paths": {
     "/funcionarios": {
       "get": {
-        "tags": [
-          "Funcionarios"
-        ],
+        "tags": ["Funcionarios"],
         "summary": "Get all Employees (Funcionarios) in system",
         "responses": {
           "200": {
@@ -51,9 +43,7 @@
     },
     "/funcionarios/{id}": {
       "get": {
-        "tags": [
-          "Funcionarios"
-        ],
+        "tags": ["Funcionarios"],
         "summary": "Get One Employee (Funcionario) in system",
         "parameters": [
           {
@@ -76,9 +66,7 @@
     },
     "/funcionarios/ativos": {
       "get": {
-        "tags": [
-          "Funcionarios"
-        ],
+        "tags": ["Funcionarios"],
         "summary": "Get Active Employees (Funcionarios) in system",
         "responses": {
           "200": {
@@ -92,13 +80,26 @@
     },
     "/funcionarios/inativos": {
       "get": {
-        "tags": [
-          "Funcionarios"
-        ],
+        "tags": ["Funcionarios"],
         "summary": "Get Inactive Employees (Funcionarios) in system",
         "responses": {
           "200": {
             "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Funcionarios"
+            }
+          }
+        }
+      }
+    },
+    "/funcionarios": {
+      "post": {
+        "tags": ["Funcionarios"],
+        "description": "Create new employee (funcionario) in system",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "New employee is created",
             "schema": {
               "$ref": "#/definitions/Funcionarios"
             }
@@ -111,7 +112,10 @@
     "Funcionario": {
       "required": [
         "fun_nome",
-        "fun_id"
+        "fun_email",
+        "fun_passwd",
+        "fun_ativo",
+        "fun_adm"
       ],
       "properties": {
         "fun_id": {
@@ -120,14 +124,38 @@
         },
         "fun_nome": {
           "type": "string"
+        },
+        "fun_data_cadastro": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "fun_adm": {
+          "type": "boolean"
+        },
+        "fun_usuario": {
+          "type": "string"
+        },
+        "fun_senha": {
+          "type": "string",
+          "description": "Will be removed"
+        },
+        "fun_passwd": {
+          "type": "string"
+        },
+        "fun_matricula": {
+          "type": "string"
+        },
+        "fun_pis": {
+          "type": "string",
+          "pattern": "999.99999.99-9"
+        },
+        "fun_email": {
+          "type": "string"
         }
       }
     },
     "updateFuncionario": {
-      "required": [
-        "fun_nome",
-        "fun_id"
-      ],
+      "required": ["fun_id", "fun_nome"],
       "properties": {
         "fun_nome": {
           "type": "string"
