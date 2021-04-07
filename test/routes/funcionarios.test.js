@@ -17,6 +17,7 @@ beforeAll(async () => {
     .first();
 
   let usuario = `admin-new${Date.now()}`;
+  let email = `${Date.now()}@mail.com`;
 
   let userAdm = {
     fun_data_cadastro: new Date(),
@@ -27,6 +28,7 @@ beforeAll(async () => {
     fun_passwd: 'Test3D3Senh@',
     fun_matricula: 101,
     fun_pis: '648.60185.98-9',
+    fun_email: email,
     fun_ativo: true,
   };
   const employeAdm = await app.services.funcionario
@@ -35,7 +37,7 @@ beforeAll(async () => {
       request(app)
         .post('/auth/signin')
         .send({
-          fun_usuario: usuario,
+          fun_email: email,
           fun_passwd: 'Test3D3Senh@',
         })
         .then(res => {
@@ -54,7 +56,7 @@ beforeAll(async () => {
     fun_passwd: `Test3D3Senh@${Date.now()}`,
     fun_matricula: 101,
     fun_pis: `648.60185.98-9`,
-    //fun_email: mailValidEmployee,
+    fun_email: mailValidEmployee,
     fun_ativo: true,
   };
 });
