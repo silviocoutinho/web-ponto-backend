@@ -31,7 +31,7 @@ module.exports = app => {
       .catch(err => next(err));
   });
 
-  router.post('/', (req, res, next) => {
+  router.post('/adicionar/', (req, res, next) => {
     app.services.funcionario
       .save(null, { ...req.body })
       .then(result => res.status(201).json(result))
@@ -48,7 +48,7 @@ module.exports = app => {
   router.delete('/:id', (req, res, next) => {
     app.services.funcionario
       .setInactive(req.params.id)
-      .then(result => res.status(201).json(result))
+      .then(result => res.status(204).json(result))
       .catch(err => next(err));
   });
 

@@ -1,0 +1,302 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "API REST Web Ponto",
+    "description": "This API that provides access to Employee Data, Time Sheet, Payslip. This was developed to CM Jau.",
+    "contact": {
+      "email": "informatica@camarajau.sp.gov.br"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "host": "localhost:3005",
+  "basePath": "/v1",
+  "tags": [
+    {
+      "name": "Funcionarios",
+      "description": "API for Employees (funcionários) in the system"
+    }
+  ],
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/funcionarios": {
+      "get": {
+        "tags": ["Funcionarios"],
+        "summary": "Get all Employees (Funcionarios) in system",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Funcionarios"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/funcionarios/{id}": {
+      "get": {
+        "tags": ["Funcionarios"],
+        "summary": "Get One Employee (Funcionario) in system",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of employee that we want to find",
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Funcionarios"
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Employee with given ID",
+        "tags": ["Funcionarios"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of employee that we want to delete",
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success (No Content)"
+          },
+          "404": {
+            "description": "Employee was not found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update Employee with give ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Funcionarios"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of employee that we want to find",
+            "type": "integer"
+          },
+          {
+            "name": "funcionarios",
+            "in": "body",
+            "description": "Employee with new values of properties",
+            "schema": {
+              "$ref": "#/definitions/updateFuncionario"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User is updated",
+            "schema": {
+              "$ref": "#/definitions/Funcionarios"
+            }
+          }
+        }
+      }
+    },
+    "/funcionarios/ativos": {
+      "get": {
+        "tags": ["Funcionarios"],
+        "summary": "Get Active Employees (Funcionarios) in system",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Funcionarios"
+            }
+          }
+        }
+      }
+    },
+    "/funcionarios/inativos": {
+      "get": {
+        "tags": ["Funcionarios"],
+        "summary": "Get Inactive Employees (Funcionarios) in system",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Funcionarios"
+            }
+          }
+        }
+      }
+    },
+    "/funcionarios/adicionar": {
+      "post": {
+        "tags": ["Funcionarios"],
+        "summary": "Create new employee (funcionario) in system",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "funcionarios",
+            "in": "body",
+            "description": "Employee with new values of properties",
+            "schema": {
+              "$ref": "#/definitions/Funcionarios"
+            }
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "New employee is created",
+            "schema": {
+              "$ref": "#/definitions/Funcionarios"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Funcionario": {
+      "required": [
+        "fun_nome",
+        "fun_email",
+        "fun_passwd",
+        "fun_ativo",
+        "fun_adm"
+      ],
+      "properties": {
+        "fun_id": {
+          "type": "integer",
+          "uniqueItems": true
+        },
+        "fun_nome": {
+          "type": "string"
+        },
+        "fun_data_cadastro": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "fun_adm": {
+          "type": "boolean"
+        },
+        "fun_usuario": {
+          "type": "string"
+        },
+        "fun_senha": {
+          "type": "string",
+          "description": "Will be removed"
+        },
+        "fun_passwd": {
+          "type": "string"
+        },
+        "fun_matricula": {
+          "type": "string"
+        },
+        "fun_pis": {
+          "type": "string",
+          "pattern": "999.99999.99-9"
+        },
+        "fun_email": {
+          "type": "string"
+        }
+      }
+    },
+    "updateFuncionario": {
+      "required": [
+        "fun_id",
+        "fun_nome",
+        "fun_data_cadastro",
+        "fun_adm",
+        "fun_usuario",
+        "fun_senha",
+        "fun_passwd",
+        "fun_matricula",
+        "fun_pis",
+        "fun_email"
+      ],
+      "properties": {
+        "fun_id": {
+          "type": "integer",
+          "uniqueItems": true
+        },
+        "fun_nome": {
+          "type": "string"
+        },
+        "fun_data_cadastro": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "fun_adm": {
+          "type": "boolean"
+        },
+        "fun_usuario": {
+          "type": "string"
+        },
+        "fun_senha": {
+          "type": "string",
+          "description": "Will be removed"
+        },
+        "fun_passwd": {
+          "type": "string"
+        },
+        "fun_matricula": {
+          "type": "string"
+        },
+        "fun_pis": {
+          "type": "string",
+          "pattern": "999.99999.99-9"
+        },
+        "fun_email": {
+          "type": "string"
+        }
+      }
+    },
+    "Funcionarios": {
+      "type": "array",
+      "$ref": "#/definitions/Funcionario"
+    }
+  }
+}
