@@ -72,6 +72,61 @@
             }
           }
         }
+      },
+      "delete": {
+        "summary": "Delete Employee with given ID",
+        "tags": ["Funcionarios"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of employee that we want to delete",
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success (No Content)"
+          },
+          "404": {
+            "description": "Employee was not found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update Employee with give ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Funcionarios"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of employee that we want to find",
+            "type": "integer"
+          },
+          {
+            "name": "funcionarios",
+            "in": "body",
+            "description": "Employee with new values of properties",
+            "schema": {
+              "$ref": "#/definitions/updateFuncionario"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User is updated",
+            "schema": {
+              "$ref": "#/definitions/Funcionarios"
+            }
+          }
+        }
       }
     },
     "/funcionarios/ativos": {
@@ -190,9 +245,51 @@
       }
     },
     "updateFuncionario": {
-      "required": ["fun_id", "fun_nome"],
+      "required": [
+        "fun_id",
+        "fun_nome",
+        "fun_data_cadastro",
+        "fun_adm",
+        "fun_usuario",
+        "fun_senha",
+        "fun_passwd",
+        "fun_matricula",
+        "fun_pis",
+        "fun_email"
+      ],
       "properties": {
+        "fun_id": {
+          "type": "integer",
+          "uniqueItems": true
+        },
         "fun_nome": {
+          "type": "string"
+        },
+        "fun_data_cadastro": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "fun_adm": {
+          "type": "boolean"
+        },
+        "fun_usuario": {
+          "type": "string"
+        },
+        "fun_senha": {
+          "type": "string",
+          "description": "Will be removed"
+        },
+        "fun_passwd": {
+          "type": "string"
+        },
+        "fun_matricula": {
+          "type": "string"
+        },
+        "fun_pis": {
+          "type": "string",
+          "pattern": "999.99999.99-9"
+        },
+        "fun_email": {
           "type": "string"
         }
       }
