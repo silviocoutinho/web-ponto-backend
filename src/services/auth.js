@@ -10,18 +10,18 @@ const RecursoIndevidoError = require('../errors/RecursoIndevidoError');
 module.exports = app => {
   //##################################################
   const signin = async auth => {
-    const { fun_usuario, fun_passwd } = auth;
+    const { fun_email, fun_passwd } = auth;
 
     try {
-      existsOrError(fun_usuario, 'Usuário não informado');
-      existsOrError(fun_passwd, 'Senha não informada');
+      existsOrError(fun_email, 'E-mail não informado!');
+      existsOrError(fun_passwd, 'Senha não informada!');
     } catch (msg) {
       throw msg;
     }
 
     const funcionario = await app
       .db('funcionarios')
-      .where({ fun_usuario: fun_usuario, fun_ativo: true })
+      .where({ fun_email: fun_email, fun_ativo: true })
       .first();
     if (!funcionario) throw new ValidationError('Credenciais inválidas!', 401);
 
