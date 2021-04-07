@@ -111,7 +111,7 @@ describe('When listing employees ', () => {
 describe('When save a new employee', () => {
   const templateForSave = (newData, errorMessage, code = 400) => {
     return request(app)
-      .post(MAIN_ROUTE)
+      .post(`${MAIN_ROUTE}/adicionar/`)
       .set('authorization', `bearer ${adminToken}`)
       .send({ ...validEmployee, ...newData })
       .then(res => {
@@ -121,7 +121,7 @@ describe('When save a new employee', () => {
   };
   test('Should save with success', () => {
     return request(app)
-      .post(MAIN_ROUTE)
+      .post(`${MAIN_ROUTE}/adicionar/`)
       .send({ ...validEmployee })
       .set('authorization', `bearer ${adminToken}`)
       .then(res => {
@@ -144,7 +144,7 @@ describe('When save a new employee', () => {
     };
 
     const res = await request(app)
-      .post(MAIN_ROUTE)
+      .post(`${MAIN_ROUTE}/adicionar/`)
       .set('authorization', `bearer ${adminToken}`)
       .send({ ...employeeWithPass });
     expect(res.status).toBe(201);
