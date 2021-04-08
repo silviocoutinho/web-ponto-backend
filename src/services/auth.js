@@ -36,6 +36,7 @@ module.exports = app => {
       matricula: funcionario.fun_matricula,
       pis: funcionario.fun_pis,
       adm: funcionario.fun_adm,
+      email: funcionario.fun_email,
       iat: now,
       exp: now + 60 * 60 * 24 * 3,
     };
