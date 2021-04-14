@@ -23,10 +23,10 @@ module.exports = app => {
       .db('funcionarios')
       .where({ fun_email: fun_email, fun_ativo: true })
       .first();
-    if (!funcionario) throw new ValidationError('Credenciais inválidas!', 401);
+    if (!funcionario) throw new RecursoIndevidoError('Credenciais inválidas!');
 
     const isMatch = await bcrypt.compare(fun_passwd, funcionario.fun_passwd);
-    if (!isMatch) throw new ValidationError('Credenciais inválidas!', 401);
+    if (!isMatch) throw new RecursoIndevidoError('Credenciais inválidas!');
 
     const now = Math.floor(Date.now() / 1000);
 
