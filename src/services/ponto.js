@@ -38,8 +38,12 @@ module.exports = app => {
    * @date 27/05/2021
    */
   const monthlyQuery = (month, year, pis) => {
-    //SELECT pontos.dia, extract(year from  pontos.dia)::integer as ano, extract(month from pontos.dia)::integer as mes FROM pontos
-    //where extract(month from  pontos.dia)::integer = 11;
+    console.log('Month', month);
+    try {
+      numberOrError(month, 'Não foi informado o Mês da Consulta');
+    } catch (error) {
+      throw error;
+    }
     return app
       .db(tableName)
       .select(fieldsFromDB)
