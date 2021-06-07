@@ -40,7 +40,7 @@ describe('When listing timecard', () => {
       .get(`${MAIN_ROUTE}/consulta-mensal`)
       .set('authorization', `bearer ${adminToken}`)
       .send({
-        month: 5,
+        month: 6,
         year: 2021,
       })
       .then(res => {

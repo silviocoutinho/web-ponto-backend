@@ -38,9 +38,8 @@ module.exports = app => {
    * @date 27/05/2021
    */
   const monthlyQuery = (month, year, pis) => {
-    console.log('Month', month);
     try {
-      numberOrError(month, 'Não foi informado o Mês da Consulta');
+      existsOrError(month, 'Não foi informado o Mês da Consulta');
     } catch (error) {
       throw error;
     }
