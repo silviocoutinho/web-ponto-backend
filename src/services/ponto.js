@@ -38,8 +38,19 @@ module.exports = app => {
    * @date 27/05/2021
    */
   const monthlyQuery = (month, year, pis) => {
+    const currentMonth = new Date().getMonth();
+    const currentYear = new Date().getFullYear();
     try {
       existsOrError(month, 'Não foi informado o Mês da Consulta');
+      existsOrError(year, 'Não foi informado o Ano da Consulta');
+
+      if (year == currentYear && month > currentMonth) {
+        throw new ValidationError('O mês selecionado é superior ao mês atual!');
+      }
+
+      if (year > currentYear) {
+        throw new ValidationError('O Ano selecionado é superior ao Ano atual!');
+      }
     } catch (error) {
       throw error;
     }
