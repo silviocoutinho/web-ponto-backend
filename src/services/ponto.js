@@ -15,15 +15,14 @@ const RecursoNaoEncontrado = require('../errors/RecursoNaoEncontrado');
 const RecursoIndevidoError = require('../errors/RecursoIndevidoError');
 const ValidationError = require('../errors/ValidationError');
 
-const fieldsFromDB = [
-  'pis',
-  'ent1',
-  'sai1',
-  'ent2',
-  'sai2',
-  'ent3',
-  'sai3',
-  'dia',
+const fieldsFromDB = [  
+  `ent1::TIMESTAMP::TIME`,
+  'sai1::TIMESTAMP::TIME',
+  'ent2::TIMESTAMP::TIME',
+  'sai2::TIMESTAMP::TIME',
+  'ent3::TIMESTAMP::TIME',
+  'sai3::TIMESTAMP::TIME',
+  'dia',  
 ];
 const tableName = 'pontos';
 
@@ -56,7 +55,7 @@ module.exports = app => {
     }
     return app
       .db(tableName)
-      .select(fieldsFromDB)
+      .select(app.db.raw(fieldsFromDB))
       .where(app.db.raw(`extract(month from  pontos.dia)::integer = ${month}`))
       .andWhere(app.db.raw(`extract(year from  pontos.dia)::integer = ${year}`))
       .andWhere(app.db.raw(`pis like '${pis}'`));
