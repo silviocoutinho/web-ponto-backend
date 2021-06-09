@@ -20,7 +20,7 @@ fakePis.forEach((item, index) => {
 });
 
 const fieldsFromDB = [
-  'pis',
+  
   'ent1',
   'sai1',
   'ent2',
@@ -89,7 +89,7 @@ describe('When listing timecard', () => {
     return request(app)
       .get(`${MAIN_ROUTE}/consulta-mensal`)
       .set('authorization', `bearer ${userToken}`)
-      .send({
+      .query({
         month: monthForQuery,
         year: yearForQuery,
         ...newData,
@@ -104,7 +104,7 @@ describe('When listing timecard', () => {
     return request(app)
       .get(`${MAIN_ROUTE}/consulta-mensal`)
       .set('authorization', `bearer ${userToken}`)
-      .send({
+      .query({
         month: monthForQuery,
         year: yearForQuery,
       })
