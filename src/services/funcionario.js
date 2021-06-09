@@ -1,10 +1,6 @@
 const {
   existsOrError,
-  notExistsOrError,
-  equalsOrError,
-  validEmailOrError,
   numberOrError,
-  positiveOrError,
   validTypeOfOrError,
   dateOrError,
   validLengthOrError,
