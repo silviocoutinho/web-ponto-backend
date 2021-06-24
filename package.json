@@ -9,7 +9,8 @@
   "scripts": {
     "test": "jest",
     "lint": "eslint src/** test/** --fix",
-    "start": "nodemon src/server.js",
+    "start:dev": "nodemon src/server.js",
+    "start": "node ./node_modules/.bin/pm2-runtime start ecosystem.config.js --env production",
     "secure-mode": "jest --watch --verbose=true --detectOpenHandles"
   },
   "keywords": [
