@@ -42,6 +42,7 @@
     "@babel/preset-env": "^7.13.5",
     "eslint": "^7.20.0",
     "nodemon": "^2.0.7",
+    "pm2": "^5.1.0",
     "prettier": "^2.2.1"
   }
 }
