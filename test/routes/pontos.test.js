@@ -19,16 +19,7 @@ fakePis.forEach((item, index) => {
   pisForQuery = pisForQuery + item;
 });
 
-const fieldsFromDB = [
-  
-  'ent1',
-  'sai1',
-  'ent2',
-  'sai2',
-  'ent3',
-  'sai3',
-  'dia',
-];
+const fieldsFromDB = ['ent1', 'sai1', 'ent2', 'sai2', 'ent3', 'sai3', 'dia'];
 
 beforeAll(async () => {
   let usuario = `user-new${Date.now()}`;

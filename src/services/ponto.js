@@ -15,14 +15,14 @@ const RecursoNaoEncontrado = require('../errors/RecursoNaoEncontrado');
 const RecursoIndevidoError = require('../errors/RecursoIndevidoError');
 const ValidationError = require('../errors/ValidationError');
 
-const fieldsFromDB = [  
+const fieldsFromDB = [
   `ent1::TIMESTAMP::TIME`,
   'sai1::TIMESTAMP::TIME',
   'ent2::TIMESTAMP::TIME',
   'sai2::TIMESTAMP::TIME',
   'ent3::TIMESTAMP::TIME',
   'sai3::TIMESTAMP::TIME',
-  'dia',  
+  'dia',
 ];
 const tableName = 'pontos';
 
@@ -37,12 +37,11 @@ module.exports = app => {
    * @date 27/05/2021
    */
   const monthlyQuery = (month, year, pis) => {
-    const currentMonth = new Date().getMonth();
+    const currentMonth = new Date().getMonth() + 1;
     const currentYear = new Date().getFullYear();
     try {
       existsOrError(month, 'Não foi informado o Mês da Consulta');
       existsOrError(year, 'Não foi informado o Ano da Consulta');
-
       if (year == currentYear && month > currentMonth) {
         throw new ValidationError('O mês selecionado é superior ao mês atual!');
       }
