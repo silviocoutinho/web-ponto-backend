@@ -1,4 +1,4 @@
-const { PASSDB, USERDB, DB } = require('./.env');
+const { PASSDB, USERDB, DB, PORTDB } = require('./.env');
 
 module.exports = {
   test: {
@@ -23,6 +23,7 @@ module.exports = {
       database: DB,
       user: USERDB,
       password: PASSDB,
+      port: PORTDB,
     },
     pool: {
       min: 2,
