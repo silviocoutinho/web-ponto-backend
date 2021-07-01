@@ -31,4 +31,7 @@ jobs:
 
       - name: Create env file
         env:
-          ENV: ${{ secrets.ENV }}
+          ENV_API: ${{ secrets.ENV }}
+        run: |
+          touch .env                    
+          echo ENV: $ENV_API >> .env
