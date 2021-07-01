@@ -32,5 +32,5 @@ jobs:
       - name: Create env file
         run: |
           touch .env                    
-          echo ENV:${{ secrets.AUTHSECRET }} >> .env
+          echo ENV=${{ secrets.AUTHSECRET }} >> .env
           cat .env
