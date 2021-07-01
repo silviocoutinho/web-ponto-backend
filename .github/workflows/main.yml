@@ -33,4 +33,4 @@ jobs:
         env:
           SUPER_SECRET: ${{ secrets.ENV_API }}
         run: |
-          example-command "$SUPER_SECRET"
+          echo "ENV:" + "$SUPER_SECRET"
