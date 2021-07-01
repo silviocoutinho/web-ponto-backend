@@ -30,7 +30,5 @@ jobs:
         run: pm2 start
 
       - name: Create env file
-        run: |
-          touch .env                    
-          echo ENV=${{ secrets.AUTHSECRET }} >> .env
-          cat .env
+        env:
+          ENV: ${{ secrets.ENV }}
