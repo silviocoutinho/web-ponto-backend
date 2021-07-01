@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: 'API Portal do Servidor',
+      name: 'portal-servidor-api',
       script: './src/server.js',
       watch: true,
       env: {
