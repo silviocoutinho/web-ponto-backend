@@ -31,6 +31,6 @@ jobs:
 
       - shell: bash
         env:
-          SUPER_SECRET: ${{ secrets.ENV_API }}
+          SUPER_SECRET: ${{ secrets.SuperSecret }}
         run: |
           echo "ENV:" + "$SUPER_SECRET"
