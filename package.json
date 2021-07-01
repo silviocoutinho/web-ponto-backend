@@ -1,6 +1,6 @@
 {
   "name": "controle-ponto-backend",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "API para consulta do Ponto dos funcionários da CM JAU",
   "main": "index.js",
   "directories": {
