@@ -30,7 +30,6 @@ jobs:
         run: pm2 start
 
       - name: Generate env file
-
         run: |
           touch .env
           echo "module.exports = {" >> .env
@@ -39,4 +38,5 @@ jobs:
           echo USERDB:  "'${{ secrets.USERDB_API }}'",    >> .env 
           echo DB:      "'${{ secrets.DB_API }}'",        >> .env
           echo PASSDB:  "'${{ secrets.PASSDB_API }}'",    >> .env
+          echo PORTDB:  "'${{ secrets.PORTDB_API }}'",    >> .env
           echo "}" >> .env
