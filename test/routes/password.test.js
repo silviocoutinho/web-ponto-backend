@@ -5,6 +5,9 @@ const VERSION_API = '/v1';
 const MAIN_ROUTE = `${VERSION_API}/password`;
 
 let adminToken;
+let user1Token;
+let user2Token;
+let user3Token;
 let emailAdmin;
 let validNewPasswd;
 let invalidNewPasswd;
@@ -45,6 +48,26 @@ beforeAll(async () => {
         }),
     );
 
+  user1Token = await request(app)
+    .post('/auth/signin')
+    .send({
+      fun_email: 'user-change-passwd@mail.com',
+      fun_passwd: 'Test3D3Senh@',
+    })
+    .then(res => {
+      return res.body.token;
+    });
+
+  user2Token = await request(app)
+    .post('/auth/signin')
+    .send({
+      fun_email: 'user-change-passwd2@mail.com',
+      fun_passwd: 'Test3D3Senh@',
+    })
+    .then(res => {
+      return res.body.token;
+    });
+
   validNewPasswd = {
     passwd: 'Test3D3Senh@1',
     confirmPasswd: 'Test3D3Senh@1',
@@ -70,7 +93,7 @@ describe('When update a password', () => {
       });
   };
 
-  test('Should update with success', () => {
+  test('Should update password by admin with success', async () => {
     return request(app)
       .put(`${MAIN_ROUTE}/alterar/`)
       .send({ ...validNewPasswd })
@@ -79,5 +102,47 @@ describe('When update a password', () => {
         expect(res.status).toBe(200);
         expect(res.body[0]).not.toHaveProperty('fun_passwd');
       });
+  });
+  test('Should update password by owner user with sucess', () => {
+    return request(app)
+      .put(`${MAIN_ROUTE}/alterar/`)
+      .send({
+        passwd: 'Test3D3Senh@2',
+        confirmPasswd: 'Test3D3Senh@2',
+        email: 'user-change-passwd@mail.com',
+      })
+      .set('authorization', `bearer ${user1Token}`)
+      .then(res => {
+        expect(res.status).toBe(200);
+        expect(res.body[0]).not.toHaveProperty('fun_passwd');
+      });
+  });
+  test('Should not update password by other user', () => {
+    return request(app)
+      .put(`${MAIN_ROUTE}/alterar/`)
+      .send({
+        passwd: 'Test3D3Senh@2',
+        confirmPasswd: 'Test3D3Senh@2',
+        email: 'user-change-passwd@mail.com',
+      })
+      .set('authorization', `bearer ${user2Token}`)
+      .then(res => {
+        expect(res.status).toBe(403);
+        expect(res.body.error).toBe(
+          'Usuário sem permissão para alterar a senha!',
+        );
+      });
+  });
+  test('Should not save without password', () => {
+    templateForSave(
+      { passwd: null, confirmPasswd: null },
+      'Não foi informado a senha!',
+    );
+  });
+  test('Should have 10 characters length in employee password', () => {
+    templateForSave(
+      { passwd: 'Tst3D#Sen', confirmPasswd: 'Tst3D#Sen' },
+      'A senha deve conter no mínimo 10 caracteres',
+    );
   });
 });

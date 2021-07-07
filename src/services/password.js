@@ -64,6 +64,12 @@ module.exports = app => {
       );
       strengthPassword(dataPasswd.passwd);
       validEmailOrError(dataPasswd.email, 'O e-mail informado é inválido!!!');
+
+      if (dataUser.email !== dataPasswd.email && dataUser.adm !== true) {
+        throw new RecursoIndevidoError(
+          'Usuário sem permissão para alterar a senha!',
+        );
+      }
     } catch (err) {
       throw err;
     }

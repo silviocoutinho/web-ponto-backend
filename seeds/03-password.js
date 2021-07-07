@@ -30,5 +30,17 @@ exports.seed = function (knex) {
       fun_email: 'user-change-passwd2@mail.com',
       fun_ativo: true,
     },
+    {
+      fun_data_cadastro: new Date(),
+      fun_adm: false,
+      fun_nome: 'Employee User 3 - inactive',
+      fun_usuario: `usuario-up-pass${Date.now()}`,
+      fun_senha: 'Test3D3Senh@',
+      fun_passwd: encryptPassword('Test3D3Senh@', 10),
+      fun_matricula: 906,
+      fun_pis: '972.49001.37-6',
+      fun_email: 'user-change-passwd3@mail.com',
+      fun_ativo: false,
+    },
   ]);
 };
