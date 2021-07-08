@@ -37,6 +37,7 @@ module.exports = app => {
       pis: funcionario.fun_pis,
       adm: funcionario.fun_adm,
       email: funcionario.fun_email,
+      ativo: funcionario.fun_ativo,
       iat: now,
       exp: now + 60 * 60 * 24 * 3,
     };

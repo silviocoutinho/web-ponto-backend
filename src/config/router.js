@@ -10,4 +10,7 @@ module.exports = app => {
 
   protectedRouter.use('/pontos', app.routes.pontos);
   app.use('/v1', app.config.passport.authenticate(), protectedRouter);
+
+  protectedRouter.use('/password', app.routes.password);
+  app.use('/v1', app.config.passport.authenticate(), protectedRouter);
 };
