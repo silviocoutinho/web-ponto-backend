@@ -189,5 +189,5 @@ module.exports = app => {
       .where({ fun_id: id });
   };
 
-  return { findAll, findOne, findById, save, setInactive };
+  return { findAll, findOne, findById, save, setInactive, encryptPassword };
 };
