@@ -10,5 +10,11 @@ module.exports = app => {
       .catch(err => next(err));
   });
 
+  router.get('/consulta-intervalo-datas', (req, res, next) => {
+    app.services.ponto
+      .dailyQuery(req.query.startDate, req.query.endDate, req.user.pis)
+      .then(result => res.status(200).json(result))
+      .catch(err => next(err));
+  });
   return router;
 };
