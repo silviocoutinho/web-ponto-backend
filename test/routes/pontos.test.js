@@ -12,6 +12,9 @@ const fakePis = fakerBr.pispasep();
 const currentMonth = new Date().getMonth() + 1;
 const currentYear = new Date().getFullYear();
 
+let startDate;
+let endDate;
+
 let userToken = '';
 let pisForQuery = '';
 
@@ -75,8 +78,11 @@ beforeAll(async () => {
   ]);
 });
 
+startDate = `${yearForQuery}-${monthForQuery}-05`;
+endDate = `${yearForQuery}-${monthForQuery}-06`;
+
 describe('When listing timecard', () => {
-  const templateForList = async (newData, errorMessage, code = 400) => {
+  const templateMonthyQuery = async (newData, errorMessage, code = 400) => {
     return request(app)
       .get(`${MAIN_ROUTE}/consulta-mensal`)
       .set('authorization', `bearer ${userToken}`)
@@ -91,6 +97,22 @@ describe('When listing timecard', () => {
       })
       .catch(err => console.error(err));
   };
+  const templateDailyQuery = async (newData, errorMessage, code = 400) => {
+    return request(app)
+      .get(`${MAIN_ROUTE}/consulta-intervalo-datas`)
+      .set('authorization', `bearer ${userToken}`)
+      .query({
+        startDate,
+        endDate,
+        ...newData,
+      })
+      .then(res => {
+        expect(res.status).toBe(code);
+        expect(res.body.error).toBe(errorMessage);
+      })
+      .catch(err => console.error(err));
+  };
+
   test('Should return all time card by month', async () => {
     return request(app)
       .get(`${MAIN_ROUTE}/consulta-mensal`)
@@ -105,21 +127,59 @@ describe('When listing timecard', () => {
       .catch(err => console.error(err));
   });
   test('Should not list when month is null', () => {
-    templateForList({ month: null }, 'Não foi informado o Mês da Consulta');
+    templateMonthyQuery({ month: null }, 'Não foi informado o Mês da Consulta');
   });
   test('Should not list when year is null', () => {
-    templateForList({ year: null }, 'Não foi informado o Ano da Consulta');
+    templateMonthyQuery({ year: null }, 'Não foi informado o Ano da Consulta');
   });
   test('Should not list when selected month > current month', () => {
-    templateForList(
+    templateMonthyQuery(
       { month: currentMonth + 1, year: currentYear },
       'O mês selecionado é superior ao mês atual!',
     );
   });
   test('Should not list when selected year > current year', () => {
-    templateForList(
+    templateMonthyQuery(
       { year: currentYear + 1 },
       'O Ano selecionado é superior ao Ano atual!',
+    );
+  });
+  test('Should return all time card by date interval', async () => {
+    return request(app)
+      .get(`${MAIN_ROUTE}/consulta-intervalo-datas`)
+      .set('authorization', `bearer ${userToken}`)
+      .query({
+        startDate,
+        endDate,
+      })
+      .then(res => {
+        expect(res.status).toBe(200);
+      })
+      .catch(err => console.error(err));
+  });
+  test('Should return all time card by date interval when dates is equal', async () => {
+    return request(app)
+      .get(`${MAIN_ROUTE}/consulta-intervalo-datas`)
+      .set('authorization', `bearer ${userToken}`)
+      .query({
+        startDate,
+        endDate: startDate,
+      })
+      .then(res => {
+        expect(res.status).toBe(200);
+      })
+      .catch(err => console.error(err));
+  });
+  test('Should not list when Start Date is null', () => {
+    templateDailyQuery({ startDate: null }, 'Não foi informado a data inicial');
+  });
+  test('Should not list when End Date is null', () => {
+    templateDailyQuery({ endDate: null }, 'Não foi informado a data final');
+  });
+  test('Should not list when Start Date is greaer than End Date is null', () => {
+    templateDailyQuery(
+      { startDate: endDate, endDate: startDate },
+      'A data inicial é superior à data final',
     );
   });
 });

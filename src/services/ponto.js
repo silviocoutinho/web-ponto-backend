@@ -60,11 +60,40 @@ module.exports = app => {
       .andWhere(app.db.raw(`pis like '${pis}'`));
   };
 
+  /**
+   * Retorna um array de objetos com os pontos no intervalo de dias defino
+   * @function
+   * @name dailyQuery
+   * @return {Array} Um Array com todos os pontos no periodo
+   * @author Silvio Coutinho <silviocoutinho@ymail.com>
+   * @since v1
+   * @date 15/07/2021
+   */
+  const dailyQuery = (startDate, endDate, pis) => {
+    try {
+      existsOrError(startDate, 'Não foi informado a data inicial');
+      existsOrError(endDate, 'Não foi informado a data final');
+      existsOrError(pis, 'Não foi informado o PIS/PASEP do funcionário');
+      if (startDate > endDate) {
+        throw new ValidationError('A data inicial é superior à data final');
+      }
+    } catch (error) {
+      throw error;
+    }
+    return app
+      .db(tableName)
+      .select(app.db.raw(fieldsFromDB))
+      .where(
+        app.db.raw(`dia BETWEEN  date '${startDate}' AND date '${endDate}'`),
+      )
+      .andWhere(app.db.raw(`pis like '${pis}'`));
+  };
+
   const query = (filter = {}) => {
     //SELECT pontos.dia, extract(year from  pontos.dia)::integer as ano, extract(month from pontos.dia)::integer as mes FROM pontos
     //where extract(month from  pontos.dia)::integer = 11;
     return app.db(tableName).select(fieldsFromDB).where(filter);
   };
 
-  return { monthlyQuery };
+  return { monthlyQuery, dailyQuery };
 };
