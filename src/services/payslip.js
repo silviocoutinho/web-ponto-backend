@@ -1,6 +1,7 @@
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const hummus = require('hummus');
 
 const { numberOrError, validLengthOrError } = require('data-validation-cmjau');
 
@@ -79,7 +80,7 @@ module.exports = app => {
    * @since v1
    * @date 17/08/2021
    */
-  const uploadPayslip = (req, res, next) => {
+  const uploadPayslip = async (req, res, next) => {
     console.log(req.query);
     const mimetype = ['application/pdf'];
     const documentName = 'holerite' + req.query.month + '-' + req.query.year;
@@ -98,17 +99,30 @@ module.exports = app => {
 
       let upload = settingMulter(storage, mimetype);
 
-      upload(req, res, function (err) {
+      await upload(req, res, function (err) {
         messageFromValidation = fileValidation(req, res, err);
-        return res
-          .status(messageFromValidation.status)
-          .json(messageFromValidation);
+        if (messageFromValidation.status !== 200) {
+          return res
+            .status(messageFromValidation.status)
+            .json(messageFromValidation);
+        }
+        try {
+          splitPayslip(documentName, res);
+        } catch (error) {
+          next(error);
+        }
       });
     } catch (error) {
-      console.log(error);
-      return res.status(error.code).json({ 'Message Error': error.message });
+      next(error);
     }
-    splitPayslip(documentName);
+  };
+
+  const fileExists = file => {
+    return new Promise(resolve => {
+      fs.access(file, fs.constants.R_OK, err => {
+        err ? resolve(false) : resolve(true);
+      });
+    });
   };
 
   /**
@@ -121,8 +135,20 @@ module.exports = app => {
    * @since v1
    * @date 17/08/2021
    */
-  const splitPayslip = file => {
-    console.log('Split Payslip', file);
+  const splitPayslip = async (file, res) => {
+    const fullFileName = `tmp/upload/${file}.pdf`;
+    console.log(fullFileName);
+    fileExists(fullFileName)
+      .then(result => {
+        if (result) {
+          //savePayslip(fullFileName);
+          return res.status(400).json({ Message: 'Existe o Arquivo' });
+        }
+        return res
+          .status(400)
+          .json({ Message: 'Problemas ao gravar o arquivo' });
+      })
+      .catch(err => res.status(400).json({ ERROR: err }));
   };
 
   /**
@@ -135,6 +161,16 @@ module.exports = app => {
    * @date 17/08/2021
    */
   const savePayslip = file => {
+    const arraysOFMatriculas = getMatriculasFromFuncionarios;
+    let pdfReader = hummus.createReader(file);
+    let pages = pdfReader.getPagesCount();
+    arraysOFMatriculas.forEach(element => {
+      pdfWriter = hummus.createWriter(`tmp/upload/matricula-${element}.pdf`);
+      pdfWriter
+        .createPDFCopyingContext(pdfReader)
+        .appendPDFPageFromPDF(element);
+      pdfWriter.end();
+    });
     return file;
   };
 
@@ -149,6 +185,19 @@ module.exports = app => {
    */
   const saveRecordPayslip = file => {
     return file;
+  };
+
+  /**
+   * Cria um registro na Tabela de Holerites, gravando os dados referentes ao mes, ano e nome do arquivo
+   * @function
+   * @name getMatriculasFromFuncionarios
+   * @return {Array} Um array com as matriculas dos funcionarios ativos
+   * @author Silvio Coutinho <silviocoutinho@ymail.com>
+   * @since v1
+   * @date 17/08/2021
+   */
+  const getMatriculasFromFuncionarios = () => {
+    return [299, 300, 301, 303, 500];
   };
 
   return { uploadPayslip };
