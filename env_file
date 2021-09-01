@@ -4,4 +4,8 @@ module.exports = {
     USERDB: '', 
     DB: '',
     PASSDB: '', 
+    HOST_FTP: '',
+    USER_FTP: '',
+    PASS_FTP: '',
+    PORT_FTP: 21,
 } 

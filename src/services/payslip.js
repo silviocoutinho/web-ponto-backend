@@ -1,7 +1,10 @@
 const multer = require('multer');
+const FTPStorage = require('multer-ftp');
+const FTP = require('ftp');
 const path = require('path');
 const fs = require('fs');
-const hummus = require('hummus');
+
+const { HOST_FTP, USER_FTP, PASS_FTP, PORT_FTP } = require('../../.env');
 
 const { numberOrError, validLengthOrError } = require('data-validation-cmjau');
 
@@ -59,17 +62,18 @@ module.exports = app => {
     return;
   };
 
-  const settingMulter = (storage, mimetype) =>
-    multer({
-      storage: storage,
-      fileFilter: (req, file, cb) => {
-        if (!mimetype.includes(file.mimetype)) {
-          req.fileValidationError = `Formato deve ser ${type}!`;
-          return cb(null, false, new Error('Formato deve ser ${type}!'));
-        }
-        cb(null, true);
-      },
-    }).single('file');
+  /**
+   * Recebe um arquivo e verifica o tipo
+   * @function
+   * @name checkTypeOf
+   * @return {String} Uma string com tipo de arquivo
+   * @author Silvio Coutinho <silviocoutinho@ymail.com>
+   * @since v1
+   * @date 01/09/2021
+   */
+  const checkTypeOf = file => {
+    return path.extname(file).toLowerCase();
+  };
 
   /**
    * Recebe um arquivo PDF com os Holerites (PaySlip) ordenados por Matricula
@@ -81,48 +85,53 @@ module.exports = app => {
    * @date 17/08/2021
    */
   const uploadPayslip = async (req, res, next) => {
-    console.log(req.query);
+    const ftpClient = new FTP();
     const mimetype = ['application/pdf'];
+    const type = 'PDF';
     const documentName = 'holerite' + req.query.month + '-' + req.query.year;
-    let messageFromValidation = {};
+
+    const config = {
+      host: HOST_FTP,
+      user: USER_FTP,
+      password: PASS_FTP,
+      port: PORT_FTP,
+      secure: false,
+    };
+
     try {
+      ftpClient.connect(config);
       propertiesFileInformation(req.query.month, req.query.year, 1);
 
-      const storage = multer.diskStorage({
-        destination: function (req, file, cb) {
-          cb(null, 'tmp/upload');
-        },
-        filename: function (req, file, cb) {
-          cb(null, documentName + path.extname(file.originalname));
-        },
-      });
+      const upload = multer({
+        storage: new FTPStorage({
+          basepath: `holerites/2021`,
+          connection: ftpClient,
+        }),
+      }).single('file'); // name of the frontend input field
 
-      let upload = settingMulter(storage, mimetype);
+      let messageFromValidation = { status: 200, message: 'Arquivo enviado!' };
 
-      await upload(req, res, function (err) {
+      upload(req, res, err => {
         messageFromValidation = fileValidation(req, res, err);
-        if (messageFromValidation.status !== 200) {
-          return res
-            .status(messageFromValidation.status)
-            .json(messageFromValidation);
+        console.log(req.file.originalname);
+        console.log(checkTypeOf(req.file.originalname));
+        if (err) {
+          return {
+            status: 500,
+            message: 'O arquivo não foi enviado!',
+          };
         }
-        try {
-          splitPayslip(documentName, res);
-        } catch (error) {
-          next(error);
+        if (messageFromValidation.status == 400) {
+          ftpClient.end();
         }
+        ftpClient.end();
       });
-    } catch (error) {
-      next(error);
-    }
-  };
 
-  const fileExists = file => {
-    return new Promise(resolve => {
-      fs.access(file, fs.constants.R_OK, err => {
-        err ? resolve(false) : resolve(true);
-      });
-    });
+      return messageFromValidation;
+    } catch (error) {
+      ftpClient.end();
+      throw error;
+    }
   };
 
   /**
@@ -161,16 +170,6 @@ module.exports = app => {
    * @date 17/08/2021
    */
   const savePayslip = file => {
-    const arraysOFMatriculas = getMatriculasFromFuncionarios;
-    let pdfReader = hummus.createReader(file);
-    let pages = pdfReader.getPagesCount();
-    arraysOFMatriculas.forEach(element => {
-      pdfWriter = hummus.createWriter(`tmp/upload/matricula-${element}.pdf`);
-      pdfWriter
-        .createPDFCopyingContext(pdfReader)
-        .appendPDFPageFromPDF(element);
-      pdfWriter.end();
-    });
     return file;
   };
 
