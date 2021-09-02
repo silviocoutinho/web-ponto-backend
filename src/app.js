@@ -10,9 +10,10 @@ const swaggerDocument = require('./swagger/swagger.json');
 
 app.db = db;
 
-consign({ cwd: 'src', verbose: false })
+consign({ cwd: 'src', verbose: true })
   .include('config/passport.js')
   .then('config/middlewares.js')
+  .then('./services/util.js')
   .then('./services')
   .then('./routes')
   .then('./config/router.js')

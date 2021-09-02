@@ -9,6 +9,7 @@ const { HOST_FTP, USER_FTP, PASS_FTP, PORT_FTP } = require('../../.env');
 const { numberOrError, validLengthOrError } = require('data-validation-cmjau');
 
 const ValidationError = require('../errors/ValidationError');
+const { list } = require('pm2');
 
 module.exports = app => {
   /**
@@ -98,40 +99,49 @@ module.exports = app => {
       secure: false,
     };
 
-    try {
-      ftpClient.connect(config);
-      propertiesFileInformation(req.query.month, req.query.year, 1);
-
-      const upload = multer({
-        storage: new FTPStorage({
-          basepath: `holerites/2021`,
-          connection: ftpClient,
-        }),
-      }).single('file'); // name of the frontend input field
-
-      let messageFromValidation = { status: 200, message: 'Arquivo enviado!' };
-
-      upload(req, res, err => {
-        messageFromValidation = fileValidation(req, res, err);
-        console.log(req.file.originalname);
-        console.log(checkTypeOf(req.file.originalname));
-        if (err) {
-          return {
-            status: 500,
-            message: 'O arquivo não foi enviado!',
-          };
-        }
-        if (messageFromValidation.status == 400) {
-          ftpClient.end();
-        }
-        ftpClient.end();
+    await app.services.util
+      .checkConnection(HOST_FTP, PORT_FTP)
+      .then(result => {
+        console.log(result);
+        // try {
+        //   // ftpClient.connect(config);
+        //   // propertiesFileInformation(req.query.month, req.query.year, 1);
+        //   // const upload = multer({
+        //   //   storage: new FTPStorage({
+        //   //     basepath: `holerites/2021`,
+        //   //     connection: ftpClient,
+        //   //   }),
+        //   // }).single('file'); // name of the frontend input field
+        //   // let messageFromValidation = { status: 200, message: 'Arquivo enviado!' };
+        //   // upload(req, res, err => {
+        //   //   messageFromValidation = fileValidation(req, res, err);
+        //   //   console.log(req.file.originalname);
+        //   //   console.log(checkTypeOf(req.file.originalname));
+        //   //   if (err) {
+        //   //     return {
+        //   //       status: 500,
+        //   //       message: 'O arquivo não foi enviado!',
+        //   //     };
+        //   //   }
+        //   //   if (messageFromValidation.status == 400) {
+        //   //     ftpClient.end();
+        //   //   }
+        //   //   ftpClient.end();
+        //   // });
+        //   // return messageFromValidation;
+        //   return { message: 'OK' };
+        // } catch (error) {
+        //   //ftpClient.end();
+        //   console.log(error);
+        //   //throw error;
+        // }
+      })
+      .catch(err => {
+        console.log('ERRO FTP', err);
+        return new Error(
+          'Erro de conexão com servidor FTP, contacte o administrador',
+        );
       });
-
-      return messageFromValidation;
-    } catch (error) {
-      ftpClient.end();
-      throw error;
-    }
   };
 
   /**

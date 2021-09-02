@@ -7,7 +7,8 @@ module.exports = app => {
     app.services.payslip
       .uploadPayslip(req, res, next)
       .then(result => {
-        res.status(200).json({ message: result.message });
+        console.log(result);
+        res.status(200).json(result);
       })
       .catch(err => next(err));
   });
