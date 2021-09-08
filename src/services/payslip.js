@@ -3,13 +3,29 @@ const FTPStorage = require('multer-ftp');
 const FTP = require('ftp');
 const path = require('path');
 const fs = require('fs');
+const MD5 = require('md5.js');
 
-const { HOST_FTP, USER_FTP, PASS_FTP, PORT_FTP } = require('../../.env');
+const {
+  HOST_FTP,
+  USER_FTP,
+  PASS_FTP,
+  PORT_FTP,
+  URL_FILE_SERVER,
+  URL_PATH_FILES_STORED,
+} = require('../../.env');
 
 const { numberOrError, validLengthOrError } = require('data-validation-cmjau');
 
 const ValidationError = require('../errors/ValidationError');
-const { list } = require('pm2');
+const { connect } = require('pm2');
+
+const configFTP = {
+  host: HOST_FTP,
+  user: USER_FTP,
+  password: PASS_FTP,
+  port: PORT_FTP,
+  secure: false,
+};
 
 module.exports = app => {
   /**
@@ -21,7 +37,7 @@ module.exports = app => {
    *          o status e message referente a validacao do arquivo
    * @author Silvio Coutinho <silviocoutinho@ymail.com>
    * @since v1
-   * @date 30/09/2020
+   * @date 30/08/2020
    */
   const fileValidation = (req, res, err) => {
     if (req.fileValidationError) {
@@ -88,60 +104,67 @@ module.exports = app => {
   const uploadPayslip = async (req, res, next) => {
     const ftpClient = new FTP();
     const mimetype = ['application/pdf'];
-    const type = 'PDF';
-    const documentName = 'holerite' + req.query.month + '-' + req.query.year;
+    const documentName = new MD5()
+      .update('holerite' + req.query.month + '-' + req.query.year)
+      .digest('hex');
 
-    const config = {
-      host: HOST_FTP,
-      user: USER_FTP,
-      password: PASS_FTP,
-      port: PORT_FTP,
-      secure: false,
-    };
+    const config = configFTP;
 
-    await app.services.util
+    const checkSubmissionStatusUpload = await app.services.util
       .checkConnection(HOST_FTP, PORT_FTP)
       .then(result => {
-        console.log(result);
-        // try {
-        //   // ftpClient.connect(config);
-        //   // propertiesFileInformation(req.query.month, req.query.year, 1);
-        //   // const upload = multer({
-        //   //   storage: new FTPStorage({
-        //   //     basepath: `holerites/2021`,
-        //   //     connection: ftpClient,
-        //   //   }),
-        //   // }).single('file'); // name of the frontend input field
-        //   // let messageFromValidation = { status: 200, message: 'Arquivo enviado!' };
-        //   // upload(req, res, err => {
-        //   //   messageFromValidation = fileValidation(req, res, err);
-        //   //   console.log(req.file.originalname);
-        //   //   console.log(checkTypeOf(req.file.originalname));
-        //   //   if (err) {
-        //   //     return {
-        //   //       status: 500,
-        //   //       message: 'O arquivo não foi enviado!',
-        //   //     };
-        //   //   }
-        //   //   if (messageFromValidation.status == 400) {
-        //   //     ftpClient.end();
-        //   //   }
-        //   //   ftpClient.end();
-        //   // });
-        //   // return messageFromValidation;
-        //   return { message: 'OK' };
-        // } catch (error) {
-        //   //ftpClient.end();
-        //   console.log(error);
-        //   //throw error;
-        // }
+        try {
+          ftpClient.connect(config);
+          propertiesFileInformation(req.query.month, req.query.year, 1);
+          const upload = multer({
+            storage: configStorage(ftpClient, documentName),
+          }).single('file'); // name of the frontend input field
+          let messageFromValidation = {
+            status: 200,
+            message: 'Arquivo enviado!',
+          };
+          upload(req, res, err => {
+            messageFromValidation = fileValidation(req, res, err);
+            if (err) {
+              ftpClient.end();
+              return {
+                status: 500,
+                message: 'O arquivo não foi enviado!',
+              };
+            }
+            if (messageFromValidation.status == 400) {
+              ftpClient.end();
+            }
+            ftpClient.end();
+          });
+          return messageFromValidation;
+        } catch (error) {
+          ftpClient.end();
+          console.log(error);
+          throw error;
+        }
       })
       .catch(err => {
-        console.log('ERRO FTP', err);
-        return new Error(
-          'Erro de conexão com servidor FTP, contacte o administrador',
-        );
+        return {
+          status: 503,
+          message: 'Erro de conexão com o Servidor FTP!',
+        };
       });
+    if (checkSubmissionStatusUpload.status == 200) {
+      console.log('Sending message to RabbitMQ');
+      const message = {
+        fileName: documentName + '.pdf',
+        month: req.query.month,
+        year: req.query.year,
+        urlServer: URL_FILE_SERVER,
+        storeFilePath: URL_PATH_FILES_STORED + '/' + req.query.year,
+      };
+      app.services.messageQueue.sendMessageToQueue(
+        message,
+        'ms_payslip_process',
+      );
+    }
+    return checkSubmissionStatusUpload;
   };
 
   /**
@@ -211,3 +234,22 @@ module.exports = app => {
 
   return { uploadPayslip };
 };
+
+/**
+ * Configura o Storage para upload dos arquivos via FTP
+ * @function
+ * @name configStorage
+ * @return {FTPStorage} Uma funcao que configura os parametros para envio de arquivos
+ * @author Silvio Coutinho <silviocoutinho@ymail.com>
+ * @since v1
+ * @date 08/09/2021
+ */
+function configStorage(ftpClient, documentName) {
+  return new FTPStorage({
+    basepath: `holerites/2021`,
+    connection: ftpClient,
+    destination: function (req, file, options, callback) {
+      callback(null, path.join(options.basepath, documentName + '.pdf'));
+    },
+  });
+}
