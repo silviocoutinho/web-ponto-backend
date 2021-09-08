@@ -1,5 +1,6 @@
 const app = require('./app');
+const { PORT } = require('../.env');
 
-app.listen(3005, () => {
-  console.log('Backend ok...!');
+app.listen(PORT, () => {
+  console.log('Backend ok...! Running on Port: ', PORT);
 });
