@@ -1,5 +1,5 @@
-var net = require('net');
-var Promise = require('bluebird');
+const net = require('net');
+const Promise = require('bluebird');
 
 module.exports = app => {
   /**
