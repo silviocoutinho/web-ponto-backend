@@ -1,5 +1,7 @@
 const amqp = require('amqplib/callback_api');
-const CONN_URL = 'amqp://localhost:5672';
+const { RABBITMQ_SERVER } = require('../../.env');
+const CONN_URL = `amqp://${RABBITMQ_SERVER}:5672`;
+console.log(CONN_URL);
 let ch = null;
 
 module.exports = app => {
@@ -22,7 +24,7 @@ module.exports = app => {
         if (errCh) {
           throw errCh;
         }
-        amqp.connect('amqp://localhost:5672', (error1, connection) => {
+        amqp.connect(CONN_URL, (error1, connection) => {
           console.log('MESSAGE: ', message, queueName);
           channel.sendToQueue(queueName, Buffer.from(JSON.stringify(message)), {
             persistent: true,
