@@ -159,12 +159,19 @@ module.exports = app => {
         urlServer: URL_FILE_SERVER,
         storeFilePath: URL_PATH_FILES_STORED + '/' + req.query.year,
       };
-      app.services.messageQueue.sendMessageToQueue(
+
+      const checkSubmissionMessageToQueue = await app.services.messageQueue.sendMessageToQueue2(
         message,
         'ms_payslip_process',
       );
+
+      console.log('Check Rabbit', checkSubmissionMessageToQueue);
+      if (checkSubmissionMessageToQueue.status == 503) {
+        return checkSubmissionMessageToQueue;
+      } else {
+        return checkSubmissionStatusUpload;
+      }
     }
-    return checkSubmissionStatusUpload;
   };
 
   /**
@@ -245,8 +252,9 @@ module.exports = app => {
  * @date 08/09/2021
  */
 function configStorage(ftpClient, documentName) {
+  const year = new Date().getFullYear();
   return new FTPStorage({
-    basepath: `holerites/2021`,
+    basepath: `${URL_PATH_FILES_STORED}/${year}`,
     connection: ftpClient,
     destination: function (req, file, options, callback) {
       callback(null, path.join(options.basepath, documentName + '.pdf'));
