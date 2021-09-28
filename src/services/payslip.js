@@ -27,6 +27,15 @@ const configFTP = {
   secure: false,
 };
 
+const fieldsFromDB = [
+  'id',
+  'employee_registration',
+  'month',
+  'year',
+  'type',
+  'fileNamePayslip',
+];
+
 module.exports = app => {
   /**
    * Verifica o arquivo que esta sendo enviado
@@ -239,25 +248,38 @@ module.exports = app => {
     return [299, 300, 301, 303, 500];
   };
 
-  return { uploadPayslip };
-};
+  /**
+   * Consulta o Holerite do Funcionario por Funcionario e Ano
+   * @function
+   * @name findByEmployee
+   * @return {Array} Um array com os dados referentes aos Holerites do Funcionario
+   * @author Silvio Coutinho <silviocoutinho@ymail.com>
+   * @since v1
+   * @date 01/09/2021
+   */
+  const findByEmployeeAndYear = (filter = {}) => {
+    return app.db('holerites').where(filter).select(fieldsFromDB);
+  };
 
-/**
- * Configura o Storage para upload dos arquivos via FTP
- * @function
- * @name configStorage
- * @return {FTPStorage} Uma funcao que configura os parametros para envio de arquivos
- * @author Silvio Coutinho <silviocoutinho@ymail.com>
- * @since v1
- * @date 08/09/2021
- */
-function configStorage(ftpClient, documentName) {
-  const year = new Date().getFullYear();
-  return new FTPStorage({
-    basepath: `${URL_PATH_FILES_STORED}/${year}`,
-    connection: ftpClient,
-    destination: function (req, file, options, callback) {
-      callback(null, path.join(options.basepath, documentName + '.pdf'));
-    },
-  });
-}
+  /**
+   * Configura o Storage para upload dos arquivos via FTP
+   * @function
+   * @name configStorage
+   * @return {FTPStorage} Uma funcao que configura os parametros para envio de arquivos
+   * @author Silvio Coutinho <silviocoutinho@ymail.com>
+   * @since v1
+   * @date 08/09/2021
+   */
+  function configStorage(ftpClient, documentName) {
+    const year = new Date().getFullYear();
+    return new FTPStorage({
+      basepath: `${URL_PATH_FILES_STORED}/${year}`,
+      connection: ftpClient,
+      destination: function (req, file, options, callback) {
+        callback(null, path.join(options.basepath, documentName + '.pdf'));
+      },
+    });
+  }
+
+  return { uploadPayslip, findByEmployeeAndYear };
+};
