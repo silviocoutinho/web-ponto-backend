@@ -6,8 +6,8 @@ module.exports = app => {
   router.get('/:year', (req, res, next) => {
     app.services.payslip
       .findByEmployeeAndYear({
-        year: req.params.year,
-        employee_registration: req.user.matricula,
+        'ano': req.params.year,
+        'matricula': req.user.matricula,
       })
       .then(result => res.status(200).json(result))
       .catch(err => next(err));

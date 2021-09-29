@@ -28,12 +28,9 @@ const configFTP = {
 };
 
 const fieldsFromDB = [
-  'id',
-  'employee_registration',
-  'month',
-  'year',
-  'type',
-  'fileNamePayslip',
+  'referencia',
+  'tipo',
+  'link'
 ];
 
 module.exports = app => {
@@ -258,7 +255,7 @@ module.exports = app => {
    * @date 01/09/2021
    */
   const findByEmployeeAndYear = (filter = {}) => {
-    return app.db('holerites').where(filter).select(fieldsFromDB);
+    return app.db('holerite_com_tipo').where(filter).select(fieldsFromDB);
   };
 
   /**
