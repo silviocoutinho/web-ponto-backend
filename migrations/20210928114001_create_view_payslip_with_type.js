@@ -6,8 +6,12 @@ exports.up = function(knex) {
     a."month" AS Mes, 
     a."year" AS Ano, 
     a."fileNamePayslip" AS Link, 
-    b."type" AS Tipo
-    FROM holerites a inner JOIN tipo_holerites b ON a.type = b.id
+    b."type" AS Tipo,
+    c."fun_nome" AS Funcionario,
+    c."fun_matricula" AS Matricula
+    FROM holerites a 
+    inner JOIN tipo_holerites b ON a.type = b.id
+    inner JOIN funcionarios   c ON a.employee_registration = c.fun_matricula
     ORDER BY a."month", a."year" 
 `);
 };
