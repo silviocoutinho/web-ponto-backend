@@ -10,7 +10,7 @@ const swaggerDocument = require('./swagger/swagger.json');
 
 app.db = db;
 
-consign({ cwd: 'src', verbose: true })
+consign({ cwd: 'src', verbose: false })
   .include('config/passport.js')
   .then('config/middlewares.js')
   .then('./services/util.js')
@@ -31,7 +31,7 @@ app.use((err, req, res, next) => {
   else if (name == 'RecursoIndevidoError')
     res.status(403).json({ error: message });
   else {
-    console.log('=========================>', message);
+    //console.log('=========================>', message);
     res.status(500).json({ name, message, stack }); //stack => caminho do erro
   }
   next(err);

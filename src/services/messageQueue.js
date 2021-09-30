@@ -2,7 +2,7 @@ const amqp = require('amqplib/callback_api');
 const amqp2 = require('amqplib');
 const { RABBITMQ_SERVER } = require('../../.env');
 const CONN_URL = `amqp://${RABBITMQ_SERVER}:5672`;
-console.log(CONN_URL);
+
 let ch = null;
 
 module.exports = app => {
