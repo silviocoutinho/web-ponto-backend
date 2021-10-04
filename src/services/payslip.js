@@ -159,6 +159,7 @@ module.exports = app => {
         fileName: documentName + '.pdf',
         month: req.query.month,
         year: req.query.year,
+        description: req.query.description, //mes de referencia
         urlServer: URL_FILE_SERVER,
         storeFilePath: URL_PATH_FILES_STORED + '/' + req.query.year,
       };
