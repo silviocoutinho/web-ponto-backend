@@ -27,11 +27,7 @@ const configFTP = {
   secure: false,
 };
 
-const fieldsFromDB = [
-  'referencia',
-  'tipo',
-  'link'
-];
+const fieldsFromDB = ['referencia', 'tipo', 'link'];
 
 module.exports = app => {
   /**
@@ -156,6 +152,7 @@ module.exports = app => {
           message: 'Erro de conexão com o Servidor FTP!',
         };
       });
+
     if (checkSubmissionStatusUpload.status == 200) {
       console.log('Sending message to RabbitMQ');
       const message = {
@@ -177,6 +174,12 @@ module.exports = app => {
       } else {
         return checkSubmissionStatusUpload;
       }
+    }
+    if (checkSubmissionStatusUpload.status !== 200) {
+      throw new ValidationError(
+        checkSubmissionStatusUpload.message,
+        checkSubmissionStatusUpload.status,
+      );
     }
   };
 
