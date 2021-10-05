@@ -31,6 +31,7 @@ jobs:
 
       - name: Generate env file
         run: |
+          rm .env
           touch .env
           echo "module.exports = {" >> .env
           echo  authSecret: "'${{ secrets.AUTH_API }}'",  >> .env
@@ -39,4 +40,12 @@ jobs:
           echo DB:      "'${{ secrets.DB_API }}'",        >> .env
           echo PASSDB:  "'${{ secrets.PASSDB_API }}'",    >> .env
           echo PORTDB:  "'${{ secrets.PORTDB_API }}'",    >> .env
+          echo HOST_FTP:  "'${{ secrets.HOST_FTP_API }}'",    >> .env
+          echo USER_FTP:  "'${{ secrets.USER_FTP_API }}'",    >> .env
+          echo PASS_FTP:  "'${{ secrets.PASS_FTP_API }}'",      >> .env
+          echo PORT_FTP:  "'${{ secrets.PORT_FTP_API }}'",      >> .env
+          echo RABBITMQ_SERVER: "'${{ secrets.RABBITMQ_SERVER_API }}'",    >> .env
+          echo URL_FILE_SERVER: "'${{ secrets.URL_FILE_SERVER_API }}'",    >> .env
+          echo URL_PATH_FILES_STORED: "'${{ secrets.URL_PATH_FILES_STORED_API }}'",    >> .env
+
           echo "}" >> .env
