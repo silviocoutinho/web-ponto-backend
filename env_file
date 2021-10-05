@@ -1,7 +1,15 @@
 module.exports = {
     authSecret: '',
     ENV: '', // test or prod
+    PORT: 3005,
     USERDB: '', 
     DB: '',
     PASSDB: '', 
+    HOST_FTP: '',
+    USER_FTP: '',
+    PASS_FTP: '',
+    PORT_FTP: 21,
+    RABBITMQ_SERVER: '',
+    URL_FILE_SERVER: '',
+    URL_PATH_FILES_STORED: '',
 } 
