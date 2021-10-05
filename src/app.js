@@ -13,6 +13,7 @@ app.db = db;
 consign({ cwd: 'src', verbose: false })
   .include('config/passport.js')
   .then('config/middlewares.js')
+  .then('./services/util.js')
   .then('./services')
   .then('./routes')
   .then('./config/router.js')
@@ -30,7 +31,7 @@ app.use((err, req, res, next) => {
   else if (name == 'RecursoIndevidoError')
     res.status(403).json({ error: message });
   else {
-    console.log('=========================>', message);
+    //console.log('=========================>', message);
     res.status(500).json({ name, message, stack }); //stack => caminho do erro
   }
   next(err);
