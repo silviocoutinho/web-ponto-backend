@@ -1,0 +1,42 @@
+name: Push to main
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    strategy:
+      matrix:
+        node-version: [14.x]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Stop PM2
+        run: pm2 stop portal-servidor-api
+        if: ${{failure()}}
+
+      - name: Start PM2.
+        run: pm2 start
+
+      - name: Generate env file
+        run: |
+          touch .env
+          echo "module.exports = {" >> .env
+          echo  authSecret: "'${{ secrets.AUTH_API }}'",  >> .env
+          echo ENV:     "'${{ secrets.ENV_API }}'",       >> .env
+          echo USERDB:  "'${{ secrets.USERDB_API }}'",    >> .env 
+          echo DB:      "'${{ secrets.DB_API }}'",        >> .env
+          echo PASSDB:  "'${{ secrets.PASSDB_API }}'",    >> .env
+          echo PORTDB:  "'${{ secrets.PORTDB_API }}'",    >> .env
+          echo "}" >> .env
