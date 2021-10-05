@@ -30,8 +30,7 @@ jobs:
         run: pm2 start
 
       - name: Generate env file
-        run: |
-          rm .env
+        run: |          
           touch .env
           echo "module.exports = {" >> .env
           echo  authSecret: "'${{ secrets.AUTH_API }}'",  >> .env
