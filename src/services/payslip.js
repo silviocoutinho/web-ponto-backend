@@ -124,17 +124,17 @@ module.exports = app => {
           let messageFromValidation = {
             status: 200,
             message: 'Arquivo enviado!',
-          };
+          };          
           upload(req, res, err => {
-            messageFromValidation = fileValidation(req, res, err);
+            messageFromValidation = fileValidation(req, res, err);            
             if (err) {
               ftpClient.end();
               return {
                 status: 500,
                 message: 'O arquivo não foi enviado!',
               };
-            }
-            if (messageFromValidation.status == 400) {
+            }            
+            if (Number(messageFromValidation.status) === Number(400)) {
               ftpClient.end();
             }
             ftpClient.end();
@@ -153,7 +153,7 @@ module.exports = app => {
         };
       });
 
-    if (checkSubmissionStatusUpload.status == 200) {
+    if (checkSubmissionStatusUpload.status === 200) {
       console.log('Sending message to RabbitMQ');
       const message = {
         fileName: documentName + '.pdf',
@@ -170,15 +170,15 @@ module.exports = app => {
       );
 
       console.log('Check Rabbit', checkSubmissionMessageToQueue);
-      if (checkSubmissionMessageToQueue.status == 503) {
+      if (checkSubmissionMessageToQueue.status === 503) {
         return checkSubmissionMessageToQueue;
       } else {
         return checkSubmissionStatusUpload;
       }
-    }
-    if (checkSubmissionStatusUpload.status !== 200) {
+    }    
+    if (Number(checkSubmissionStatusUpload.status) !== Number(200)) {      
       throw new ValidationError(
-        checkSubmissionStatusUpload.message,
+        checkSubmissionStatusUpload.error,
         checkSubmissionStatusUpload.status,
       );
     }
@@ -273,6 +273,7 @@ module.exports = app => {
    */
   function configStorage(ftpClient, documentName) {
     const year = new Date().getFullYear();
+    console.log('path ', `${URL_PATH_FILES_STORED}/${year}`)
     return new FTPStorage({
       basepath: `${URL_PATH_FILES_STORED}/${year}`,
       connection: ftpClient,
