@@ -14,7 +14,11 @@ const {
   URL_PATH_FILES_STORED,
 } = require('../../.env');
 
-const { numberOrError, validLengthOrError } = require('data-validation-cmjau');
+const {
+  numberOrError,
+  validLengthOrError,
+  existsOrError,
+} = require('data-validation-cmjau');
 
 const ValidationError = require('../errors/ValidationError');
 const { connect } = require('pm2');
@@ -67,11 +71,12 @@ module.exports = app => {
    * @since v1
    * @date 18/08/2021
    */
-  const propertiesFileInformation = (month, year, type) => {
+  const propertiesFileInformation = (month, year, description, type) => {
     try {
       numberOrError(year, 'Valor inválido para o parâmetro Ano');
       validLengthOrError(year, 4, 4, 'Ano');
       numberOrError(month, 'Valor inválido para o parâmetro Mês');
+      existsOrError(description, 'Valor inválido para o parâmetro Referência');
       if (month < 1 || month > 12) {
         throw new ValidationError('Valor inválido para o parâmetro Mês');
       }
@@ -117,23 +122,28 @@ module.exports = app => {
       .then(result => {
         try {
           ftpClient.connect(config);
-          propertiesFileInformation(req.query.month, req.query.year, 1);
+          propertiesFileInformation(
+            req.query.month,
+            req.query.year,
+            req.query.description,
+            1,
+          );
           const upload = multer({
             storage: configStorage(ftpClient, documentName),
           }).single('file'); // name of the frontend input field
           let messageFromValidation = {
             status: 200,
             message: 'Arquivo enviado!',
-          };          
+          };
           upload(req, res, err => {
-            messageFromValidation = fileValidation(req, res, err);            
+            messageFromValidation = fileValidation(req, res, err);
             if (err) {
               ftpClient.end();
               return {
                 status: 500,
                 message: 'O arquivo não foi enviado!',
               };
-            }            
+            }
             if (Number(messageFromValidation.status) === Number(400)) {
               ftpClient.end();
             }
@@ -147,12 +157,18 @@ module.exports = app => {
         }
       })
       .catch(err => {
+        if (err.code === 400) {
+          return {
+            status: err.code,
+            error: err.message,
+          };
+        }
         return {
           status: 503,
-          message: 'Erro de conexão com o Servidor FTP!',
+          error: 'Erro de conexão com o Servidor FTP!',
         };
       });
-
+    console.log('check Upload', checkSubmissionStatusUpload);
     if (checkSubmissionStatusUpload.status === 200) {
       console.log('Sending message to RabbitMQ');
       const message = {
@@ -175,8 +191,8 @@ module.exports = app => {
       } else {
         return checkSubmissionStatusUpload;
       }
-    }    
-    if (Number(checkSubmissionStatusUpload.status) !== Number(200)) {      
+    }
+    if (Number(checkSubmissionStatusUpload.status) !== Number(200)) {
       throw new ValidationError(
         checkSubmissionStatusUpload.error,
         checkSubmissionStatusUpload.status,
@@ -273,7 +289,7 @@ module.exports = app => {
    */
   function configStorage(ftpClient, documentName) {
     const year = new Date().getFullYear();
-    console.log('path ', `${URL_PATH_FILES_STORED}/${year}`)
+    console.log('path ', `${URL_PATH_FILES_STORED}/${year}`);
     return new FTPStorage({
       basepath: `${URL_PATH_FILES_STORED}/${year}`,
       connection: ftpClient,
