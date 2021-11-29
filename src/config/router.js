@@ -3,7 +3,7 @@ const express = require('express');
 module.exports = app => {
   app.use('/auth', app.routes.auth);
 
-  //app.use('/payslip', app.routes.payslip);
+  //app.use('/certificados', app.routes.certificados);
 
   const protectedRouter = express.Router();
 
@@ -14,5 +14,8 @@ module.exports = app => {
   protectedRouter.use('/password', app.routes.password);
 
   protectedRouter.use('/payslip', app.routes.payslip);
+
+  protectedRouter.use('/certificados', app.routes.certificados);
+
   app.use('/v1', app.config.passport.authenticate(), protectedRouter);
 };
