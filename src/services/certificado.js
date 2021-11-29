@@ -44,7 +44,8 @@ module.exports = app => {
     return app
       .db('certificados')
       .select(app.db.raw(fieldsFromDB))
-      .where({ fun_id: id });
+      .where({ fun_id: id })
+      .orderBy('data_emissao', 'desc');
   };
 
   return { findByID };
