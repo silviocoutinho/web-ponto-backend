@@ -19,9 +19,9 @@ const fieldsFromDB = [
   'curso',
   'entidade',
   `concat(carga, ' ' ,carga_tipo) as carga_horaria`,
-  `TO_CHAR(data_emissao_certificado :: DATE, 'dd/mm/yyyy') as data_emissao_certificado`,
+  `TO_CHAR(data_emissao :: DATE, 'dd/mm/yyyy') as data_emissao_certificado`,
   'aceito',
-  `TO_CHAR(data_aceite :: DATE, 'dd/mm/yyyy') as data_aceite`,
+  `TO_CHAR(data_aceite_recusa :: DATE, 'dd/mm/yyyy') as data_aceite`,
   'motivo_fim',
 ];
 
