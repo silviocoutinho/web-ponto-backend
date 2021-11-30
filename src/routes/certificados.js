@@ -10,5 +10,12 @@ module.exports = app => {
       .catch(err => next(err));
   });
 
+  router.post('/adicionar/', (req, res, next) => {
+    app.services.certificado
+      .save(null, { ...req.body })
+      .then(result => res.status(201).json(result))
+      .catch(err => next(err));
+  });
+
   return router;
 };

@@ -25,6 +25,20 @@ const fieldsFromDB = [
   'motivo_fim',
 ];
 
+const fieldsToDB = [
+  'processo',
+  'curso',
+  'entidade',
+  'carga',
+  'carga_tipo',
+  'data_emissao',
+  'aceito',
+  'data_aceite_recusa',
+  'motivo_fim',
+  'matricula',
+  'fun_id',
+];
+
 module.exports = app => {
   /**
    * Retorna todos os registros de certificados do Funcionario
@@ -48,5 +62,44 @@ module.exports = app => {
       .orderBy('data_emissao', 'desc');
   };
 
-  return { findByID };
+  /**
+   * Salva um registro no recurso Certificados
+   * @function
+   * @name save
+   * @return {Number}  Um Array com os Ids dos registros  *
+   * @author Silvio Coutinho <silviocoutinho@ymail.com>
+   * @since v1
+   * @date 30/12/2021
+   */
+  const save = (id, certificado, nomeTabela = 'certificados') => {
+    console.log('id: ', id);
+
+    try {
+      if (id) {
+        numberOrError(id, 'ID inválido, é esperado um número inteiro');
+      }
+
+      /*       existsOrError(
+        certificado.processo,
+        'Não foi informado o Código do Processo!',
+      ); */
+
+      if (id === null) {
+      }
+    } catch (err) {
+      throw err;
+    }
+
+    if (id) {
+      return app.db(nomeTabela).update(certificado, fieldsFromDB).where({ id });
+    } else {
+      return app.db(nomeTabela).insert(certificado, '*');
+    }
+  };
+
+  const save2 = (id, certificado, nomeTabela = 'certificados') => {
+    return app.db('certificados').insert(certificado, '*');
+  };
+
+  return { findByID, save, save2 };
 };
