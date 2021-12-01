@@ -71,18 +71,30 @@ module.exports = app => {
    * @since v1
    * @date 30/12/2021
    */
-  const save = (id, certificado, nomeTabela = 'certificados') => {
-    console.log('id: ', id);
-
+  const save = async (id, certificado, nomeTabela = 'certificados') => {
     try {
       if (id) {
         numberOrError(id, 'ID inválido, é esperado um número inteiro');
       }
 
-      /*       existsOrError(
+      existsOrError(
         certificado.processo,
         'Não foi informado o Código do Processo!',
-      ); */
+      );
+      existsOrError(certificado.curso, 'Não foi informado o Curso!');
+      existsOrError(certificado.entidade, 'Não foi informado a Entidade!');
+      numberOrError(
+        certificado.carga,
+        'É esperado um valor numérico para Carga Horária!',
+      );
+      existsOrError(
+        certificado.data_emissao,
+        'Não foi informado a Data de Emissão!',
+      );
+      existsOrError(
+        certificado.matricula,
+        'Não foi informado a Matrícula do Funcionário!',
+      );
 
       if (id === null) {
       }
@@ -93,7 +105,7 @@ module.exports = app => {
     if (id) {
       return app.db(nomeTabela).update(certificado, fieldsFromDB).where({ id });
     } else {
-      return app.db(nomeTabela).insert(certificado, '*');
+      return app.db(nomeTabela).insert(certificado, fieldsToDB);
     }
   };
 
