@@ -7,7 +7,9 @@ const MAIN_ROUTE = `${VERSION_API}/certificados`;
 let adminToken = '';
 let generalUserToken = '';
 let validCertificate = '';
-const IDCertificateToUpdate = Math.floor(Math.random() * 8000) + 10000;
+let IDCertificateToUpdate = 0; //Math.floor(Math.random() * 8000) + 20000;
+let IDCertificateToDelete = 0;
+let certificateToDelete = '';
 
 beforeAll(async () => {
   adminToken = await request(app)
@@ -19,6 +21,24 @@ beforeAll(async () => {
     .then(res => {
       return res.body.token;
     });
+
+  IDCertificateToUpdate = await app
+    .db('certificados_ultimo_id')
+    .select(['id'])
+    .first()
+    .then(res => {
+      return res.id + 1;
+    })
+    .catch(error => console.log(error));
+
+  IDCertificateToDelete = await app
+    .db('certificados_ultimo_id')
+    .select(['id'])
+    .first()
+    .then(res => {
+      return res.id + 2;
+    })
+    .catch(error => console.log(error));
   generalUserToken = await request(app)
     .post('/auth/signin')
     .send({
@@ -45,6 +65,21 @@ beforeAll(async () => {
 
   certificateToUpdate = {
     id: IDCertificateToUpdate,
+    processo: 'TST/040',
+    curso: 'Curso Auditoria Pública',
+    entidade: 'ENAP',
+    carga: '65',
+    data_emissao: '2020-08-13 00:00',
+    data_aceite_recusa: '2020-10-11 00:00',
+    motivo_fim: 'CAPROF 3',
+    aceito: true,
+    matricula: 1,
+    fun_id: 647,
+    carga_tipo: 'horas',
+  };
+
+  certificateToDelete = {
+    id: IDCertificateToDelete,
     processo: 'TST/010',
     curso: 'Curso de Análise de Editais',
     entidade: 'IBRAP',
@@ -100,7 +135,7 @@ describe('When save a new certificate', () => {
         expect(res.status).toBe(201);
       });
   });
-  test('Should have not save with null value in processo', () => {
+  test('Should not have save with null value in processo', () => {
     return request(app)
       .post(`${MAIN_ROUTE}/adicionar/`)
       .send({ ...validCertificate, processo: null })
@@ -110,7 +145,7 @@ describe('When save a new certificate', () => {
         expect(res.body.error).toBe('Não foi informado o Código do Processo!');
       });
   });
-  test('Should have not save with null value in curso', () => {
+  test('Should not have save with null value in curso', () => {
     return request(app)
       .post(`${MAIN_ROUTE}/adicionar/`)
       .send({ ...validCertificate, curso: null })
@@ -120,7 +155,7 @@ describe('When save a new certificate', () => {
         expect(res.body.error).toBe('Não foi informado o Curso!');
       });
   });
-  test('Should have not save with null value in Entidade', () => {
+  test('Should not have save with null value in Entidade', () => {
     return request(app)
       .post(`${MAIN_ROUTE}/adicionar/`)
       .send({ ...validCertificate, entidade: null })
@@ -142,7 +177,7 @@ describe('When save a new certificate', () => {
         );
       });
   });
-  test('Should have not save with null value in Data Emissão', () => {
+  test('Should not have save with null value in Data Emissão', () => {
     return request(app)
       .post(`${MAIN_ROUTE}/adicionar/`)
       .send({ ...validCertificate, data_emissao: null })
@@ -152,7 +187,7 @@ describe('When save a new certificate', () => {
         expect(res.body.error).toBe('Não foi informado a Data de Emissão!');
       });
   });
-  test('Should have not save with null value in Matricula', () => {
+  test('Should not have save with null value in Matricula', () => {
     return request(app)
       .post(`${MAIN_ROUTE}/adicionar/`)
       .send({ ...validCertificate, matricula: null })
@@ -166,11 +201,11 @@ describe('When save a new certificate', () => {
   });
 });
 
-describe('When update a new certificate', () => {
+describe('When update a certificate', () => {
   test('Should update with success', () => {
     return app
       .db('certificados')
-      .insert(certificateToUpdate)
+      .insert({ ...certificateToUpdate, id: certificateToUpdate.id + 1 })
       .then(() =>
         request(app)
           .put(`${MAIN_ROUTE}/atualizar/${IDCertificateToUpdate}`)
@@ -181,7 +216,7 @@ describe('When update a new certificate', () => {
           }),
       );
   });
-  test('Should have not update with general user', () => {
+  test('Should not have update with general user', () => {
     return request(app)
       .put(`${MAIN_ROUTE}/atualizar/${IDCertificateToUpdate}`)
       .send({ ...certificateToUpdate, processo: null })
@@ -191,7 +226,7 @@ describe('When update a new certificate', () => {
         expect(res.body.error).toBe('Usuário não autorizado!');
       });
   });
-  test('Should have not update with null value in processo', () => {
+  test('Should not have update with null value in processo', () => {
     return request(app)
       .put(`${MAIN_ROUTE}/atualizar/${IDCertificateToUpdate}`)
       .send({ ...certificateToUpdate, processo: null })
@@ -201,7 +236,7 @@ describe('When update a new certificate', () => {
         expect(res.body.error).toBe('Não foi informado o Código do Processo!');
       });
   });
-  test('Should have not update with null value in curso', () => {
+  test('Should not have update with null value in curso', () => {
     return request(app)
       .put(`${MAIN_ROUTE}/atualizar/${IDCertificateToUpdate}`)
       .send({ ...validCertificate, curso: null })
@@ -211,7 +246,7 @@ describe('When update a new certificate', () => {
         expect(res.body.error).toBe('Não foi informado o Curso!');
       });
   });
-  test('Should have not update with null value in Entidade', () => {
+  test('Should not have update with null value in Entidade', () => {
     return request(app)
       .put(`${MAIN_ROUTE}/atualizar/${IDCertificateToUpdate}`)
       .send({ ...certificateToUpdate, entidade: null })
@@ -233,7 +268,7 @@ describe('When update a new certificate', () => {
         );
       });
   });
-  test('Should have not update with null value in Data Emissão', () => {
+  test('Should not have update with null value in Data Emissão', () => {
     return request(app)
       .put(`${MAIN_ROUTE}/atualizar/${IDCertificateToUpdate}`)
       .send({ ...certificateToUpdate, data_emissao: null })
@@ -243,7 +278,7 @@ describe('When update a new certificate', () => {
         expect(res.body.error).toBe('Não foi informado a Data de Emissão!');
       });
   });
-  test('Should have not update with null value in Matricula', () => {
+  test('Should not have update with null value in Matricula', () => {
     return request(app)
       .put(`${MAIN_ROUTE}/atualizar/${IDCertificateToUpdate}`)
       .send({ ...certificateToUpdate, matricula: null })
@@ -255,7 +290,7 @@ describe('When update a new certificate', () => {
         );
       });
   });
-  test('Should have not update with null value in Motivo_Fim', () => {
+  test('Should not have update with null value in Motivo_Fim', () => {
     return request(app)
       .put(`${MAIN_ROUTE}/atualizar/${IDCertificateToUpdate}`)
       .send({ ...certificateToUpdate, motivo_fim: null })
@@ -265,7 +300,7 @@ describe('When update a new certificate', () => {
         expect(res.body.error).toBe('Não foi informado o campo Motivo Fim!');
       });
   });
-  test('Should have not update with null value in Aceito', () => {
+  test('Should not have update with null value in Aceito', () => {
     return request(app)
       .put(`${MAIN_ROUTE}/atualizar/${IDCertificateToUpdate}`)
       .send({ ...certificateToUpdate, aceito: null })
@@ -275,7 +310,7 @@ describe('When update a new certificate', () => {
         expect(res.body.error).toBe('Não foi informado o campo Aceito!');
       });
   });
-  test('Should have not update with null value in Data_Aceite_Recusa', () => {
+  test('Should not have update with null value in Data_Aceite_Recusa', () => {
     return request(app)
       .put(`${MAIN_ROUTE}/atualizar/${IDCertificateToUpdate}`)
       .send({ ...certificateToUpdate, data_aceite_recusa: null })
@@ -289,4 +324,44 @@ describe('When update a new certificate', () => {
   });
 });
 
+describe('When delete a certificate', () => {
+  test.skip('Should delete with success', () => {
+    return app
+      .db('certificados')
+      .insert(certificateToDelete)
+      .then(() =>
+        request(app)
+          .delete(`${MAIN_ROUTE}/${IDCertificateToDelete}`)
+          .send({ ...certificateToUpdate, processo: 'TST/1101' })
+          .set('authorization', `bearer ${adminToken}`)
+          .then(res => {
+            expect(res.status).toBe(201);
+          }),
+      );
+  });
+  test.skip('Should not have delete with general user', () => {
+    return request(app)
+      .put(`${MAIN_ROUTE}/atualizar/${IDCertificateToUpdate}`)
+      .send({ ...certificateToUpdate, processo: null })
+      .set('authorization', `bearer ${generalUserToken}`)
+      .then(res => {
+        expect(res.status).toBe(401);
+        expect(res.body.error).toBe('Usuário não autorizado!');
+      });
+  });
+  test.skip('Should not have delete a certificate with a non-existent code', () => {
+    return app
+      .db('certificados')
+      .insert(certificateToDelete)
+      .then(() =>
+        request(app)
+          .delete(`${MAIN_ROUTE}/${IDCertificateToDelete}`)
+          .send({ ...certificateToUpdate, processo: 'TST/1101' })
+          .set('authorization', `bearer ${adminToken}`)
+          .then(res => {
+            expect(res.status).toBe(201);
+          }),
+      );
+  });
+});
 //
