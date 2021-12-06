@@ -144,6 +144,7 @@ module.exports = app => {
                 message: 'O arquivo não foi enviado!',
               };
             }
+            console.log('messageFromValidation.status', messageFromValidation);
             if (Number(messageFromValidation.status) === Number(400)) {
               ftpClient.end();
             }
@@ -188,10 +189,11 @@ module.exports = app => {
       console.log('Check Rabbit', checkSubmissionMessageToQueue);
       if (checkSubmissionMessageToQueue.status === 503) {
         return checkSubmissionMessageToQueue;
-      } else {
-        return checkSubmissionStatusUpload;
+        /*  } else {
+        return checkSubmissionStatusUpload; */
       }
     }
+    console.log('checkSubmission', checkSubmissionStatusUpload);
     if (Number(checkSubmissionStatusUpload.status) !== Number(200)) {
       throw new ValidationError(
         checkSubmissionStatusUpload.error,

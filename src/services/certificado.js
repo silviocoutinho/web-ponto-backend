@@ -75,6 +75,15 @@ module.exports = app => {
     try {
       if (id) {
         numberOrError(id, 'ID inválido, é esperado um número inteiro');
+        existsOrError(
+          certificado.motivo_fim,
+          'Não foi informado o campo Motivo Fim!',
+        );
+        existsOrError(certificado.aceito, 'Não foi informado o campo Aceito!');
+        existsOrError(
+          certificado.data_aceite_recusa,
+          'Não foi informado o campo Data de Aceite ou Recusa!',
+        );
       }
 
       existsOrError(
@@ -103,7 +112,8 @@ module.exports = app => {
     }
 
     if (id) {
-      return app.db(nomeTabela).update(certificado, fieldsFromDB).where({ id });
+      delete certificado.id;
+      return app.db(nomeTabela).update(certificado, fieldsToDB).where({ id });
     } else {
       return app.db(nomeTabela).insert(certificado, fieldsToDB);
     }

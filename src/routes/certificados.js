@@ -11,11 +11,22 @@ module.exports = app => {
   });
 
   router.post('/adicionar/', async (req, res, next) => {
+    if (!req.user.adm)
+      return res.status(401).json({ error: 'Usuário não autorizado!' });
     app.services.certificado
       .save(null, { ...req.body })
       .then(result => res.status(201).json(result))
       .catch(err => next(err));
   });
 
+  router.put('/atualizar/:id', async (req, res, next) => {
+    //console.log('Body  :::', req.user);
+    if (!req.user.adm)
+      return res.status(401).json({ error: 'Usuário não autorizado!' });
+    app.services.certificado
+      .save(req.params.id, { ...req.body })
+      .then(result => res.status(201).json(result))
+      .catch(err => next(err));
+  });
   return router;
 };
