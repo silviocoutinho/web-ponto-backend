@@ -1,10 +1,7 @@
 const {
   existsOrError,
   numberOrError,
-  validTypeOfOrError,
-  dateOrError,
-  validLengthOrError,
-  strengthPassword,
+  equalsOrError,
 } = require('data-validation-cmjau');
 
 const { validateBr } = require('js-brasil');
@@ -119,9 +116,28 @@ module.exports = app => {
     }
   };
 
-  const save2 = (id, certificado, nomeTabela = 'certificados') => {
-    return app.db('certificados').insert(certificado, '*');
+  /**
+   * Deixa o funcionario inativo no sistema, setando
+   * o valor fun_ativo para false
+   * @function
+   * @name remove
+   * @author Silvio Coutinho <silviocoutinho@ymail.com>
+   * @since v1
+   * @date 07/12/2021
+   */
+  const remove = async (id, nomeTabela = 'certificados') => {
+    const checkRecord = await app
+      .db(nomeTabela)
+      .count('id')
+      .where({ id })
+      .first();
+
+    if (checkRecord.count === '1' || checkRecord.count === 1) {
+      return app.db(nomeTabela).where({ id }).del();
+    } else {
+      throw new RecursoNaoEncontrado('Registro não encontrado!');
+    }
   };
 
-  return { findByID, save, save2 };
+  return { findByID, save, remove };
 };

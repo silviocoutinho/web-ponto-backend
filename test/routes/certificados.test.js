@@ -36,7 +36,7 @@ beforeAll(async () => {
     .select(['id'])
     .first()
     .then(res => {
-      return res.id + 2;
+      return res.id + 3;
     })
     .catch(error => console.log(error));
   generalUserToken = await request(app)
@@ -81,9 +81,9 @@ beforeAll(async () => {
   certificateToDelete = {
     id: IDCertificateToDelete,
     processo: 'TST/010',
-    curso: 'Curso de Análise de Editais',
+    curso: 'Curso para Exclusao',
     entidade: 'IBRAP',
-    carga: '35',
+    carga: '5',
     data_emissao: '2020-12-13 00:00',
     data_aceite_recusa: '2020-12-21 00:00',
     motivo_fim: 'CAPROF 2',
@@ -325,43 +325,41 @@ describe('When update a certificate', () => {
 });
 
 describe('When delete a certificate', () => {
-  test.skip('Should delete with success', () => {
+  test('Should delete with success', () => {
     return app
       .db('certificados')
       .insert(certificateToDelete)
       .then(() =>
         request(app)
           .delete(`${MAIN_ROUTE}/${IDCertificateToDelete}`)
-          .send({ ...certificateToUpdate, processo: 'TST/1101' })
           .set('authorization', `bearer ${adminToken}`)
           .then(res => {
             expect(res.status).toBe(201);
           }),
       );
   });
-  test.skip('Should not have delete with general user', () => {
+  test('Should not have delete with general user', () => {
+    return app
+      .db('certificados')
+      .insert({ ...certificateToDelete, id: certificateToDelete.id + 1 })
+      .then(() =>
+        request(app)
+          .delete(`${MAIN_ROUTE}/${IDCertificateToDelete + 1}`)
+          .set('authorization', `bearer ${generalUserToken}`)
+          .then(res => {
+            expect(res.status).toBe(401);
+            expect(res.body.error).toBe('Usuário não autorizado!');
+          }),
+      );
+  });
+  test('Should not have delete a certificate with a non-existent code', () => {
     return request(app)
-      .put(`${MAIN_ROUTE}/atualizar/${IDCertificateToUpdate}`)
-      .send({ ...certificateToUpdate, processo: null })
-      .set('authorization', `bearer ${generalUserToken}`)
+      .delete(`${MAIN_ROUTE}/${IDCertificateToDelete}`)
+      .set('authorization', `bearer ${adminToken}`)
       .then(res => {
-        expect(res.status).toBe(401);
-        expect(res.body.error).toBe('Usuário não autorizado!');
+        expect(res.status).toBe(404);
+        expect(res.body.error).toBe('Registro não encontrado!');
       });
-  });
-  test.skip('Should not have delete a certificate with a non-existent code', () => {
-    return app
-      .db('certificados')
-      .insert(certificateToDelete)
-      .then(() =>
-        request(app)
-          .delete(`${MAIN_ROUTE}/${IDCertificateToDelete}`)
-          .send({ ...certificateToUpdate, processo: 'TST/1101' })
-          .set('authorization', `bearer ${adminToken}`)
-          .then(res => {
-            expect(res.status).toBe(201);
-          }),
-      );
   });
 });
 //
