@@ -66,7 +66,7 @@ module.exports = app => {
    * @return {Number}  Um Array com os Ids dos registros  *
    * @author Silvio Coutinho <silviocoutinho@ymail.com>
    * @since v1
-   * @date 30/12/2021
+   * @date 30/11/2021
    */
   const save = async (id, certificado, nomeTabela = 'certificados') => {
     try {

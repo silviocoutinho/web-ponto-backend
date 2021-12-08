@@ -1,20 +1,13 @@
 const multer = require('multer');
-const FTPStorage = require('multer-ftp');
 const FTP = require('ftp');
 const path = require('path');
 const fs = require('fs');
 const MD5 = require('md5.js');
 
-const {
-  HOST_FTP,
-  USER_FTP,
-  PASS_FTP,
-  PORT_FTP,
-  URL_FILE_SERVER,
-  URL_PATH_FILES_STORED,
-} = require('../../../.env');
+const { HOST_FTP, USER_FTP, PASS_FTP, PORT_FTP } = require('../../../.env');
 
 const ValidationError = require('../../errors/ValidationError');
+const GenericError = require('../../errors/GenericError');
 
 const configFTP = {
   host: HOST_FTP,
@@ -41,7 +34,7 @@ module.exports = app => {
    * @return {Array} Uma mensagem de sucesso ou erro
    * @author Silvio Coutinho <silviocoutinho@ymail.com>
    * @since v1
-   * @date 17/08/2021
+   * @date 07/12/2021
    */
   const uploadVacationPayslip = async (req, res, next) => {
     const ftpClient = new FTP();
@@ -52,7 +45,8 @@ module.exports = app => {
     const documentName = new MD5()
       .update(
         'holerite' +
-          req.query.registrationEmployee +
+          req.query.typePayslip +
+          req.query.employeeRegistration +
           req.query.month +
           '-' +
           req.query.year,
@@ -120,9 +114,9 @@ module.exports = app => {
           error: 'Erro de conexão com o Servidor FTP!',
         };
       });
-    console.log('check Upload', checkSubmissionStatusUpload);
+    //console.log('check Upload', checkSubmissionStatusUpload);
 
-    console.log('checkSubmission', checkSubmissionStatusUpload);
+    //console.log('checkSubmission', checkSubmissionStatusUpload);
     if (Number(checkSubmissionStatusUpload.status) !== Number(200)) {
       throw new ValidationError(
         checkSubmissionStatusUpload.error,
@@ -130,36 +124,46 @@ module.exports = app => {
       );
     }
     if (checkSubmissionStatusUpload.status === 200) {
-      return {
-        status: checkSubmissionStatusUpload.status,
-        message: checkSubmissionStatusUpload.message,
+      const dataToRecord = {
+        fileNamePayslip: documentName + '.pdf',
+        month: req.query.month,
+        year: req.query.year,
+        description: req.query.description, //mes de referencia
+        type: 3, //tipo férias
+        employee_registration: req.query.employeeRegistration,
       };
+
+      //console.log(dataToRecord);
+      try {
+        const saveRec = await saveVacationPayslip(dataToRecord, 'holerites');
+
+        return {
+          status: checkSubmissionStatusUpload.status,
+          message: checkSubmissionStatusUpload.message,
+          save: saveRec,
+        };
+      } catch (error) {
+        throw new GenericError(
+          'Erro ao Salvar o Holerite de Férias. Contacte o Administrador',
+        );
+      }
     }
   };
 
   /**
-   * Salva um registro no recurso Certificados
+   * Salva um registro no recurso Holerites
    * @function
    * @name save
    * @return {Number}  Um Array com os Ids dos registros  *
    * @author Silvio Coutinho <silviocoutinho@ymail.com>
    * @since v1
-   * @date 30/12/2021
+   * @date 07/12/2021
    */
-  const saveVacationPayslip = (
+  const saveVacationPayslip = async (
     dataVacationPayslip,
     nomeTabela = 'holerites',
   ) => {
-    dataVacationPayslip = {
-      employee_registration: 99,
-      month: '08',
-      year: '2021',
-      type: 3,
-      fileNamePayslip: '0698f716dbe7ed37155a7c128a1b484d.pdf',
-      description: '07/2021',
-    };
-
-    return app.db(nomeTabela).insert(data, fieldsToDB);
+    return await app.db(nomeTabela).insert(dataVacationPayslip, fieldsToDB);
   };
 
   return { uploadVacationPayslip };

@@ -112,7 +112,13 @@ module.exports = app => {
     const ftpClient = new FTP();
     const mimetype = ['application/pdf'];
     const documentName = new MD5()
-      .update('holerite' + req.query.month + '-' + req.query.year)
+      .update(
+        'holerite' +
+          req.query.typePayslip +
+          req.query.month +
+          '-' +
+          req.query.year,
+      )
       .digest('hex');
 
     const config = configFTP;
@@ -179,6 +185,7 @@ module.exports = app => {
         description: req.query.description, //mes de referencia
         urlServer: URL_FILE_SERVER,
         storeFilePath: URL_PATH_FILES_STORED + '/' + req.query.year,
+        typePayslip: req.query.typePayslip,
       };
 
       const checkSubmissionMessageToQueue = await app.services.messageQueue.sendMessageToQueue2(
