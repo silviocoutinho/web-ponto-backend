@@ -30,8 +30,11 @@ app.use((err, req, res, next) => {
   if (name == 'ValidationError') res.status(400).json({ error: message });
   else if (name == 'RecursoIndevidoError')
     res.status(403).json({ error: message });
+  else if (name == 'RecursoNaoEncontrado')
+    res.status(404).json({ error: message });
+  else if (name == 'GenericError') res.status(500).json({ error: message });
   else {
-    //console.log('=========================>', message);
+    console.log('=========================>', message);
     res.status(500).json({ name, message, stack }); //stack => caminho do erro
   }
   next(err);

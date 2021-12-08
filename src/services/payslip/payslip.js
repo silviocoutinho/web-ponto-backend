@@ -12,7 +12,7 @@ const {
   PORT_FTP,
   URL_FILE_SERVER,
   URL_PATH_FILES_STORED,
-} = require('../../.env');
+} = require('../../../.env');
 
 const {
   numberOrError,
@@ -20,8 +20,8 @@ const {
   existsOrError,
 } = require('data-validation-cmjau');
 
-const ValidationError = require('../errors/ValidationError');
-const { connect } = require('pm2');
+const ValidationError = require('../../errors/ValidationError');
+//const { connect } = require('pm2');
 
 const configFTP = {
   host: HOST_FTP,
@@ -112,7 +112,13 @@ module.exports = app => {
     const ftpClient = new FTP();
     const mimetype = ['application/pdf'];
     const documentName = new MD5()
-      .update('holerite' + req.query.month + '-' + req.query.year)
+      .update(
+        'holerite' +
+          req.query.typePayslip +
+          req.query.month +
+          '-' +
+          req.query.year,
+      )
       .digest('hex');
 
     const config = configFTP;
@@ -144,6 +150,7 @@ module.exports = app => {
                 message: 'O arquivo não foi enviado!',
               };
             }
+            console.log('messageFromValidation.status', messageFromValidation);
             if (Number(messageFromValidation.status) === Number(400)) {
               ftpClient.end();
             }
@@ -178,6 +185,7 @@ module.exports = app => {
         description: req.query.description, //mes de referencia
         urlServer: URL_FILE_SERVER,
         storeFilePath: URL_PATH_FILES_STORED + '/' + req.query.year,
+        typePayslip: req.query.typePayslip,
       };
 
       const checkSubmissionMessageToQueue = await app.services.messageQueue.sendMessageToQueue2(
@@ -188,10 +196,11 @@ module.exports = app => {
       console.log('Check Rabbit', checkSubmissionMessageToQueue);
       if (checkSubmissionMessageToQueue.status === 503) {
         return checkSubmissionMessageToQueue;
-      } else {
-        return checkSubmissionStatusUpload;
+        /*  } else {
+        return checkSubmissionStatusUpload; */
       }
     }
+    console.log('checkSubmission', checkSubmissionStatusUpload);
     if (Number(checkSubmissionStatusUpload.status) !== Number(200)) {
       throw new ValidationError(
         checkSubmissionStatusUpload.error,
@@ -224,45 +233,6 @@ module.exports = app => {
           .json({ Message: 'Problemas ao gravar o arquivo' });
       })
       .catch(err => res.status(400).json({ ERROR: err }));
-  };
-
-  /**
-   * Recebe um arquivo PDF referente a um holerite e armazena em disco
-   * @function
-   * @name savePayslip
-   * @return {Array} Uma mensagem de sucesso ou erro
-   * @author Silvio Coutinho <silviocoutinho@ymail.com>
-   * @since v1
-   * @date 17/08/2021
-   */
-  const savePayslip = file => {
-    return file;
-  };
-
-  /**
-   * Cria um registro na Tabela de Holerites, gravando os dados referentes ao mes, ano e nome do arquivo
-   * @function
-   * @name saveRecordPayslip
-   * @return {Array} Uma mensagem de sucesso ou erro
-   * @author Silvio Coutinho <silviocoutinho@ymail.com>
-   * @since v1
-   * @date 17/08/2021
-   */
-  const saveRecordPayslip = file => {
-    return file;
-  };
-
-  /**
-   * Cria um registro na Tabela de Holerites, gravando os dados referentes ao mes, ano e nome do arquivo
-   * @function
-   * @name getMatriculasFromFuncionarios
-   * @return {Array} Um array com as matriculas dos funcionarios ativos
-   * @author Silvio Coutinho <silviocoutinho@ymail.com>
-   * @since v1
-   * @date 17/08/2021
-   */
-  const getMatriculasFromFuncionarios = () => {
-    return [299, 300, 301, 303, 500];
   };
 
   /**

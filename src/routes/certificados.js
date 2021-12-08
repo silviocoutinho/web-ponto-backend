@@ -10,5 +10,32 @@ module.exports = app => {
       .catch(err => next(err));
   });
 
+  router.post('/adicionar/', async (req, res, next) => {
+    if (!req.user.adm)
+      return res.status(401).json({ error: 'Usuário não autorizado!' });
+    app.services.certificado
+      .save(null, { ...req.body })
+      .then(result => res.status(201).json(result))
+      .catch(err => next(err));
+  });
+
+  router.put('/atualizar/:id', async (req, res, next) => {
+    if (!req.user.adm)
+      return res.status(401).json({ error: 'Usuário não autorizado!' });
+    app.services.certificado
+      .save(req.params.id, { ...req.body })
+      .then(result => res.status(201).json(result))
+      .catch(err => next(err));
+  });
+
+  router.delete('/:id', async (req, res, next) => {
+    if (!req.user.adm)
+      return res.status(401).json({ error: 'Usuário não autorizado!' });
+    app.services.certificado
+      .remove(req.params.id)
+      .then(result => res.status(201).json(result))
+      .catch(err => next(err));
+  });
+
   return router;
 };
