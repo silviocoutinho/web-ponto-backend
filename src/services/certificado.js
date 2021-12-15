@@ -60,6 +60,91 @@ module.exports = app => {
   };
 
   /**
+   * Retorna todos os registros de certificados do(s) Funcionario(s) pelo Status
+   * @function
+   * @name findAllByStatus
+   * @return {Array} Todos os Registros de acordo com o filtro
+   * @author Silvio Coutinho <silviocoutinho@ymail.com>
+   * @since v1
+   * @date 15/12/2021
+   */
+  const findAllByStatus = status => {
+    let aceito = null;
+    try {
+      switch (status.toLowerCase()) {
+        case 'aguardando':
+          aceito = null;
+          break;
+        case 'aceito':
+          aceito = true;
+          break;
+        case 'recusado':
+          aceito = false;
+          break;
+      }
+      return app
+        .db('certificados')
+        .select(app.db.raw(fieldsFromDB))
+        .where({ aceito })
+        .orderBy('data_emissao', 'desc');
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  /**
+   * Retorna todos os registros de certificados do(s) Funcionario(s) pelo Status
+   * Podendo retornar geral ou de um funcionário selecionado
+   * @function
+   * @name findByEmployeeRegistrationAndStatus
+   * @return {Array} Todos os Registros de acordo com o filtro
+   * @author Silvio Coutinho <silviocoutinho@ymail.com>
+   * @since v1
+   * @date 14/12/2021
+   */
+  const findByEmployeeRegistrationAndStatus = (
+    employeeRegistration,
+    status,
+  ) => {
+    let aceito = null;
+    try {
+      switch (status.toLowerCase()) {
+        case 'aguardando':
+          aceito = null;
+          break;
+        case 'aceito':
+          aceito = true;
+          break;
+        case 'recusado':
+          aceito = false;
+          break;
+      }
+
+      if (employeeRegistration === null) {
+        return app
+          .db('certificados')
+          .select(app.db.raw(fieldsFromDB))
+          .where({ aceito })
+          .orderBy('data_emissao', 'desc');
+      }
+
+      if (employeeRegistration) {
+        existsOrError(
+          employeeRegistration,
+          'Não foi informado a Matrícula do Funcionário!',
+        );
+        return app
+          .db('certificados')
+          .select(app.db.raw(fieldsFromDB))
+          .where({ aceito, matricula: Number(employeeRegistration) })
+          .orderBy('data_emissao', 'desc');
+      }
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  /**
    * Salva um registro no recurso Certificados
    * @function
    * @name save
@@ -139,5 +224,11 @@ module.exports = app => {
     }
   };
 
-  return { findByID, save, remove };
+  return {
+    findByID,
+    findByEmployeeRegistrationAndStatus,
+    findAllByStatus,
+    save,
+    remove,
+  };
 };
