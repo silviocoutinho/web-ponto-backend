@@ -70,6 +70,7 @@ module.exports = app => {
             storage: app.services.payslip.config.configStorage(
               ftpClient,
               documentName,
+              req.query.year,
             ),
           }).single('file'); // name of the frontend input field
           let messageFromValidation = {
