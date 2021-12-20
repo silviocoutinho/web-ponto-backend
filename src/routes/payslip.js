@@ -30,5 +30,15 @@ module.exports = app => {
       })
       .catch(err => next(err));
   });
+
+  router.post('/upload/others/pdf', async (req, res, next) => {
+    app.services.payslip.others
+      .uploadOtherPayslip(req, res, next)
+      .then(result => {
+        res.status(200).json(result);
+      })
+      .catch(err => next(err));
+  });
+
   return router;
 };

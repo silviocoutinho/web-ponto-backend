@@ -10,6 +10,23 @@ module.exports = app => {
       .catch(err => next(err));
   });
 
+  router.get('/:status', (req, res, next) => {
+    app.services.certificado
+      .findAllByStatus(req.params.status)
+      .then(result => res.status(200).json(result))
+      .catch(err => next(err));
+  });
+
+  router.get('/:employeeRegistration/:status', (req, res, next) => {
+    app.services.certificado
+      .findByEmployeeRegistrationAndStatus(
+        req.params.employeeRegistration,
+        req.params.status,
+      )
+      .then(result => res.status(200).json(result))
+      .catch(err => next(err));
+  });
+
   router.post('/adicionar/', async (req, res, next) => {
     if (!req.user.adm)
       return res.status(401).json({ error: 'Usuário não autorizado!' });
