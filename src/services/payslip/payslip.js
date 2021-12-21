@@ -135,7 +135,7 @@ module.exports = app => {
             1,
           );
           const upload = multer({
-            storage: configStorage(ftpClient, documentName),
+            storage: configStorage(ftpClient, documentName, req.query.year),
           }).single('file'); // name of the frontend input field
           let messageFromValidation = {
             status: 200,
@@ -257,8 +257,8 @@ module.exports = app => {
    * @since v1
    * @date 08/09/2021
    */
-  function configStorage(ftpClient, documentName) {
-    const year = new Date().getFullYear();
+  function configStorage(ftpClient, documentName, year) {
+    //const year = new Date().getFullYear();
     console.log('path ', `${URL_PATH_FILES_STORED}/${year}`);
     return new FTPStorage({
       basepath: `${URL_PATH_FILES_STORED}/${year}`,
