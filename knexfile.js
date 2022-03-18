@@ -1,4 +1,4 @@
-const { PASSDB, USERDB, DB, PORTDB } = require('./.env');
+const { PASSDB, USERDB, DB, PORTDB, HOST_DB } = require('./.env');
 
 module.exports = {
   test: {
@@ -20,6 +20,7 @@ module.exports = {
   production: {
     client: 'postgresql',
     connection: {
+      host : HOST_DB,
       database: DB,
       user: USERDB,
       password: PASSDB,
