@@ -22,7 +22,7 @@ const fieldsFromDB = [
   'sai2::TIMESTAMP::TIME',
   'ent3::TIMESTAMP::TIME',
   'sai3::TIMESTAMP::TIME',
-  'dia',
+  'dia::TIMESTAMP::DATE',
 ];
 const tableName = 'pontos';
 
