@@ -5,6 +5,8 @@ module.exports = app => {
 
   //app.use('/certificados', app.routes.certificados);
 
+  app.use('/exercicio-holerites', app.routes.exercicioHolerites);
+
   const protectedRouter = express.Router();
 
   protectedRouter.use('/funcionarios', app.routes.funcionarios);
