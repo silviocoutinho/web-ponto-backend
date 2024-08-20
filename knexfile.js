@@ -7,6 +7,7 @@ module.exports = {
       database: DB,
       user: USERDB,
       password: PASSDB,
+      port: PORTDB,
     },
     pool: {
       min: 2,
@@ -20,7 +21,7 @@ module.exports = {
   production: {
     client: 'postgresql',
     connection: {
-      host : HOST_DB,
+      host: HOST_DB,
       database: DB,
       user: USERDB,
       password: PASSDB,
