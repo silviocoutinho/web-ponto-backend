@@ -1,6 +1,6 @@
 {
   "name": "controle-ponto-backend",
-  "version": "1.0.1",
+  "version": "2.2.0",
   "description": "API para consulta do Ponto dos funcionários da CM JAU",
   "main": "index.js",
   "directories": {
@@ -30,7 +30,7 @@
     "consign": "^0.1.6",
     "cors": "^2.8.5",
     "data-validation-cmjau": "^1.1.2",
-    "express": "^4.17.1",    
+    "express": "^4.17.1",
     "js-brasil": "^2.4.1",
     "jwt-simple": "^0.5.6",
     "knex": "^0.21.17",
