@@ -57,7 +57,8 @@ module.exports = app => {
       .select(app.db.raw(fieldsFromDB))
       .where(app.db.raw(`extract(month from  pontos.dia)::integer = ${month}`))
       .andWhere(app.db.raw(`extract(year from  pontos.dia)::integer = ${year}`))
-      .andWhere(app.db.raw(`pis like '${pis}'`));
+      .andWhere(app.db.raw(`pis like '${pis}'`))
+      .orderBy([{column: 'dia', order: 'asc'}]);
   };
 
   /**
@@ -86,7 +87,8 @@ module.exports = app => {
       .where(
         app.db.raw(`dia BETWEEN  date '${startDate}' AND date '${endDate}'`),
       )
-      .andWhere(app.db.raw(`pis like '${pis}'`));
+      .andWhere(app.db.raw(`pis like '${pis}'`))
+      .orderBy([{column: 'dia', order: 'asc'}]);
   };
 
   const query = (filter = {}) => {
