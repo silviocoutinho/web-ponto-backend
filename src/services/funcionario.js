@@ -19,6 +19,8 @@ const fieldsFromDB = [
   'fun_nome',
   'fun_matricula',
   'fun_pis',
+  'fun_email',
+  'fun_data_cadastro',
   'fun_ativo',
 ];
 
