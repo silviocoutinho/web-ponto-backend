@@ -46,8 +46,12 @@ module.exports = app => {
    * @since v1
    * @date 24/02/2021
    */
-  const findAll = (filter = {}) => {
-    return app.db('funcionarios').select(fieldsFromDB).where(filter);
+  const findAll = (filter = {}, orderData = "fun_id") => {
+    return app.db('funcionarios')
+      .select(fieldsFromDB)
+      .orderBy('fun_ativo', 'desc')
+      .orderBy(orderData, 'asc')
+      .where(filter);
   };
 
   /**

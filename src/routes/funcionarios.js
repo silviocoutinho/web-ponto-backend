@@ -17,6 +17,13 @@ module.exports = app => {
       .catch(err => next(err));
   });
 
+  router.get('/nome', (req, res, next) => {
+    app.services.funcionario
+      .findAll({}, "fun_nome")
+      .then(result => res.status(200).json(result))
+      .catch(err => next(err));
+  }); 
+
   router.get('/', (req, res, next) => {
     app.services.funcionario
       .findAll()
