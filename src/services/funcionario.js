@@ -24,6 +24,15 @@ const fieldsFromDB = [
   'fun_ativo',
 ];
 
+const fieldstoUpdateRecord = [  
+  'fun_nome',
+  'fun_data_cadastro',
+  'fun_matricula',
+  'fun_pis',
+  'fun_email',
+  'fun_ativo',
+];
+
 module.exports = app => {
   /**
    * Criptografa a senha do usuario
@@ -177,6 +186,57 @@ module.exports = app => {
     }
   };
 
+  const update = (id, funcionario, nomeTabela = 'funcionarios') => {
+    console.log(id);
+    try {
+      if (id) {
+        numberOrError(id, 'ID inválido, é esperado um número inteiro');
+      }
+      existsOrError(
+        funcionario.fun_nome,
+        'Não foi informado o Nome do funcionário',
+      );
+      validLengthOrError(funcionario.fun_nome, 150, 5, 'nome');
+      validTypeOfOrError(
+        funcionario.fun_nome,
+        'string',
+        'É esperado um valor textual para Nome do Funcionário!',
+      );
+      existsOrError(
+        funcionario.fun_data_cadastro,
+        'Data de cadastro não informada',
+      );  
+
+      existsOrError(funcionario.fun_matricula, 'Não foi informado a matrícula');
+      numberOrError(
+        funcionario.fun_matricula,
+        'É esperado um valor numérico para matrícula!',
+      );
+
+      existsOrError(funcionario.fun_pis, 'Não foi informado o número do PIS'); 
+
+      dateOrError(funcionario.fun_data_cadastro, 'Data de cadastro inválida!');
+
+      app.services.util.checkValueIsBoolean(
+        funcionario.fun_ativo,
+        'Foi enviado um valor inválido para o campo Ativo!',
+      )
+
+      if (!validateBr.pispasep(funcionario.fun_pis)) {
+        throw new ValidationError('PIS inválido!');
+      }
+    } catch (err) {
+      throw err;
+    }
+
+    if (id) {
+      return app
+        .db(nomeTabela)
+        .update(funcionario, fieldstoUpdateRecord)
+        .where({ fun_id: id });
+    } 
+  };
+
   const setActive = () => {};
 
   /**
@@ -195,5 +255,5 @@ module.exports = app => {
       .where({ fun_id: id });
   };
 
-  return { findAll, findOne, findById, save, setInactive, encryptPassword };
+  return { findAll, findOne, findById, save, setInactive, encryptPassword, update };
 };
