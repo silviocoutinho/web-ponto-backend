@@ -134,16 +134,6 @@ module.exports = app => {
         funcionario.fun_adm,
         'Não foi informado se o funcionário é ou não administrador',
       );
-      existsOrError(
-        funcionario.fun_usuario,
-        'Não foi informado o login do funcionário',
-      );
-      validLengthOrError(funcionario.fun_usuario, 150, 5, 'usuário');
-      validTypeOfOrError(
-        funcionario.fun_usuario,
-        'string',
-        'É esperado um valor textual para o campo Usuário do Funcionário!',
-      );
 
       if (id === null) {
         existsOrError(funcionario.fun_senha, 'Não foi informado a senha');
