@@ -48,7 +48,7 @@ module.exports = app => {
   router.put('/:id', (req, res, next) => {
     app.services.funcionario
       .update(req.params.id, { ...req.body })
-      .then(result => res.status(201).json(result))
+      .then(result => res.status(204).json(result))
       .catch(err => next(err));
   });
 
