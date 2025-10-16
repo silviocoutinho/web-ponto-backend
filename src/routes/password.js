@@ -10,7 +10,7 @@ module.exports = app => {
   router.put('/alterar/', (req, res, next) => {
     app.services.password
       .updatePassword(req.body, req.user)
-      .then(result => res.status(200).json('Senha alterada com sucesso!'))
+      .then(result => res.status(204).json('Senha alterada com sucesso!'))
       .catch(err => next(err));
   });
 
