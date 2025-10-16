@@ -112,7 +112,7 @@ module.exports = app => {
         numberOrError(id, 'ID inválido, é esperado um número inteiro');
       }
 
-      existsOrError(
+      app.services.util.checkValueIsBoolean(
         funcionario.fun_adm,
         'Não foi informado se o funcionário é ou não Administrador!',
       );
@@ -130,11 +130,6 @@ module.exports = app => {
         funcionario.fun_data_cadastro,
         'Data de cadastro não informada',
       );
-      existsOrError(
-        funcionario.fun_adm,
-        'Não foi informado se o funcionário é ou não administrador',
-      );
-
       if (id === null) {
         existsOrError(funcionario.fun_senha, 'Não foi informado a senha');
         strengthPassword(funcionario.fun_senha);
@@ -147,7 +142,7 @@ module.exports = app => {
       );
 
       existsOrError(funcionario.fun_pis, 'Não foi informado o número do PIS');
-      existsOrError(
+      app.services.util.checkValueIsBoolean(
         funcionario.fun_ativo,
         'Não foi informado se o funcionário está Ativo',
       );
