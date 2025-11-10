@@ -19,6 +19,17 @@ const fieldsFromDB = [
   'fun_nome',
   'fun_matricula',
   'fun_pis',
+  'fun_email',
+  'fun_data_cadastro',
+  'fun_ativo',
+];
+
+const fieldstoUpdateRecord = [  
+  'fun_nome',
+  'fun_data_cadastro',
+  'fun_matricula',
+  'fun_pis',
+  'fun_email',
   'fun_ativo',
 ];
 
@@ -46,8 +57,12 @@ module.exports = app => {
    * @since v1
    * @date 24/02/2021
    */
-  const findAll = (filter = {}) => {
-    return app.db('funcionarios').select(fieldsFromDB).where(filter);
+  const findAll = (filter = {}, orderData = "fun_id") => {
+    return app.db('funcionarios')
+      .select(fieldsFromDB)
+      .orderBy('fun_ativo', 'desc')
+      .orderBy(orderData, 'asc')
+      .where(filter);
   };
 
   /**
@@ -97,7 +112,7 @@ module.exports = app => {
         numberOrError(id, 'ID inválido, é esperado um número inteiro');
       }
 
-      existsOrError(
+      app.services.util.checkValueIsBoolean(
         funcionario.fun_adm,
         'Não foi informado se o funcionário é ou não Administrador!',
       );
@@ -115,21 +130,6 @@ module.exports = app => {
         funcionario.fun_data_cadastro,
         'Data de cadastro não informada',
       );
-      existsOrError(
-        funcionario.fun_adm,
-        'Não foi informado se o funcionário é ou não administrador',
-      );
-      existsOrError(
-        funcionario.fun_usuario,
-        'Não foi informado o login do funcionário',
-      );
-      validLengthOrError(funcionario.fun_usuario, 150, 5, 'usuário');
-      validTypeOfOrError(
-        funcionario.fun_usuario,
-        'string',
-        'É esperado um valor textual para o campo Usuário do Funcionário!',
-      );
-
       if (id === null) {
         existsOrError(funcionario.fun_senha, 'Não foi informado a senha');
         strengthPassword(funcionario.fun_senha);
@@ -142,7 +142,7 @@ module.exports = app => {
       );
 
       existsOrError(funcionario.fun_pis, 'Não foi informado o número do PIS');
-      existsOrError(
+      app.services.util.checkValueIsBoolean(
         funcionario.fun_ativo,
         'Não foi informado se o funcionário está Ativo',
       );
@@ -171,6 +171,57 @@ module.exports = app => {
     }
   };
 
+  const update = (id, funcionario, nomeTabela = 'funcionarios') => {
+    console.log(id);
+    try {
+      if (id) {
+        numberOrError(id, 'ID inválido, é esperado um número inteiro');
+      }
+      existsOrError(
+        funcionario.fun_nome,
+        'Não foi informado o Nome do funcionário',
+      );
+      validLengthOrError(funcionario.fun_nome, 150, 5, 'nome');
+      validTypeOfOrError(
+        funcionario.fun_nome,
+        'string',
+        'É esperado um valor textual para Nome do Funcionário!',
+      );
+      existsOrError(
+        funcionario.fun_data_cadastro,
+        'Data de cadastro não informada',
+      );  
+
+      existsOrError(funcionario.fun_matricula, 'Não foi informado a matrícula');
+      numberOrError(
+        funcionario.fun_matricula,
+        'É esperado um valor numérico para matrícula!',
+      );
+
+      existsOrError(funcionario.fun_pis, 'Não foi informado o número do PIS'); 
+
+      dateOrError(funcionario.fun_data_cadastro, 'Data de cadastro inválida!');
+
+      app.services.util.checkValueIsBoolean(
+        funcionario.fun_ativo,
+        'Foi enviado um valor inválido para o campo Ativo!',
+      )
+
+      if (!validateBr.pispasep(funcionario.fun_pis)) {
+        throw new ValidationError('PIS inválido!');
+      }
+    } catch (err) {
+      throw err;
+    }
+
+    if (id) {
+      return app
+        .db(nomeTabela)
+        .update(funcionario, fieldstoUpdateRecord)
+        .where({ fun_id: id });
+    } 
+  };
+
   const setActive = () => {};
 
   /**
@@ -189,5 +240,5 @@ module.exports = app => {
       .where({ fun_id: id });
   };
 
-  return { findAll, findOne, findById, save, setInactive, encryptPassword };
+  return { findAll, findOne, findById, save, setInactive, encryptPassword, update };
 };

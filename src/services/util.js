@@ -1,6 +1,8 @@
 const net = require('net');
 const Promise = require('bluebird');
 
+const ValidationError = require('../errors/ValidationError');
+
 module.exports = app => {
   /**
    * Check na conexao
@@ -31,5 +33,11 @@ module.exports = app => {
     });
   }
 
-  return { checkConnection };
+  const checkValueIsBoolean = (value, msg, code = 400) => {    
+    if ((typeof value !== "boolean") && (value !== 1) && (value !== 0)) {
+      throw new ValidationError(msg, code)
+    }     
+  };
+
+  return { checkConnection, checkValueIsBoolean };
 };
